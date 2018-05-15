@@ -1,0 +1,1719 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="//www.redditstatic.com/reddit.CPwTifKooEY.css" media="all"><link rel="stylesheet" type="text/css" href="//www.redditstatic.com/expando.gMzRK16vwrQ.css" media="all"><link rel="stylesheet" type="text/css" href="//www.redditstatic.com/crosspost-preview.De3P20Yb4PY.css" media="all"><link rel="stylesheet" type="text/css" href="//www.redditstatic.com/author-tooltip.uiV1oYrKgxk.css" media="all"><link rel="stylesheet" type="text/css" href="//www.redditstatic.com/listing-comments.AZZO7Kj_O88.css" media="all"><link rel="stylesheet" type="text/css" href="//www.redditstatic.com/popup-notification.6-JvPBpHWMo.css" media="all"><link rel="stylesheet" type="text/css" href="//www.redditstatic.com/desktoponboarding.XVeuXB1-IO0.css" media="all"><link rel="stylesheet" type="text/css" href="//www.redditstatic.com/videoplayer.HUkbP7XGiDI.css" media="all"><link rel="stylesheet" type="text/css" href="//www.redditstatic.com/videoplayercontrols.a_TwaTy76-k.css" media="all"><!--[if gte IE 8]><!--><link rel="stylesheet" href="" ref="applied_subreddit_theme" type="text/css"><link rel="stylesheet" href="https://b.thumbs.redditmedia.com/pHms4nJdq5_up4XD2TXpS-1ohB92T3QTX66mjJPI2QU.css" ref="applied_subreddit_stylesheet" title="applied_subreddit_stylesheet" type="text/css">
+    </head>
+    <body>
+    <div style="margin: auto; max-width: 80%;" class="expando" data-pin-condition="function() {return this.style.display != 'none';}"><form action="#" class="usertext warn-on-unload" onsubmit="return post_form(this, 'editusertext')" id="form-t3_44os14nsl"><input type="hidden" name="thing_id" value="t3_44os14"><div class="usertext-body may-blank-within md-container "><div class="md"><p>Hi everyone! I have performed an analysis on the new Pottermore sorting quiz. The data I collected should give a good indication of the correspondences between the quiz answers and the house outcome. You can also use this data to get sorted in the house of your choice, or see why you ended up in a certain house.</p>
+
+        <p>First a quick explanation of the new PM sorting quiz format:</p>
+        
+        <ol>
+        <li>Each quiz consists of 8 questions.</li>
+        <li>There are 28 possible questions in total.</li>
+        <li>The first and last question have 3 possibilities:
+        
+        <ul>
+        <li>First question: dawn/dusk, forest/river or moon/stars.</li>
+        <li>Last question: black/white, head/tails or left/right.</li>
+        </ul></li>
+        <li>Question 2-7 are each drawn from a different question set and occur in random order.
+        
+        <ul>
+        <li>Set #2: hate to be called, after you've died, known to history, potion.</li>
+        <li>Set #3: goblets, instrument, magical garden, boxes.</li>
+        <li>Set #4: difficult to deal with, troll, which would you rather be. </li>
+        <li>Set #5: power, looking forward to learning, most like to study.</li>
+        <li>Set #6: bridge, cheating, muggle, nightmare, road, street.</li>
+        <li>Set #7: pet.</li>
+        </ul></li>
+        <li>Each question has a different probability to occur on the quiz (depending on the size of the set it comes from), with the Pet question occurring 100% of the time.</li>
+        <li>There are 3⋅1⋅3⋅3⋅4⋅5⋅6⋅3 = 9720 quiz combinations and 6⋅15⋅17⋅20⋅16⋅20⋅24⋅6 = 1410048000 possible sortings.</li>
+        </ol>
+        
+        <p>The sample size of my observations is <em>n = 10000</em>. An observation is a quiz with 8 question answers associated with a house outcome.</p>
+        
+        <p>For each question I have included:</p>
+        
+        <ul>
+        <li>A table that shows the answer distribution for each house.</li>
+        <li>A bar plot that shows the table data.</li>
+        <li>Line plots for each answer (sample size against percentage) that show the regression towards the mean percentage for each house.</li>
+        </ul>
+        
+        <p>These will give a good indication of which answer belongs to which house, and insight into how the real distribution probably looks like.</p>
+        
+        <p>I have also trained a perceptron (linear classifier) on the sorting data (70% training, 15% validation, 15% testing) which correctly predicts the house result with 98% accuracy, given quiz answers as input.</p>
+        
+        <p><strong>EDIT</strong>: I've decided to add the dataset to this post, so that everyone can use it. <strong><a href="https://www.dropbox.com/s/ck3kvkoa6gbh6lf/Pottermore%20Sorting%20Quiz%20data%20set.xlsx?dl=0">Dataset in .xlsx format</a></strong> and <strong><a href="https://www.dropbox.com/s/fnvdtm729f6b8t5/Pottermore%20Sorting%20Quiz%20data%20set.csv?dl=0">dataset in .csv format</a></strong>.</p>
+        
+        <p><strong>EDIT 2</strong>: I have added a <strong><a href="https://www.dropbox.com/s/609oldthtqbadzv/Pottermore%20Sorting%20Quiz%20weight%20table%20%2898.8%25%2070-15-15%29.xlsx?dl=0">weight table</a></strong>. For each question answer it will show the score that is added to a house. The house with the maximal cumulative score is where you get sorted.</p>
+        
+        <p>This weight table achieved 98.8% accuracy at classifying 1500 test cases (trained on 7000 cases and validated on 1500 cases), but the weights might be very slightly overfitted.</p>
+        
+        <p><strong>EDIT 3</strong>: Thanks to <a href="/u/Inefable51332">/u/Inefable51332</a> for pointing out that not all questions can occur together. There are 8 different questions sets, one for each question. This is exactly the same as in PM's old quiz, except that they used to implicity factor in your pet choice. I have added to each question to which set it belongs.</p>
+        
+        <p><strong>EDIT 4</strong>: When validating the hatstall answer combinations from <a href="https://docs.google.com/spreadsheets/d/1vZy_iP_2sKXGM1MkPhRWtWE1VgrSTYqClV9SSYmVZus/edit#gid=7">Bronzedragon's set</a>, it appears there are a few simple rules to decide what house to pick (since the new PM has no hatstalls). Houses seem to be chosen according to the ordering 1. Gryffindor 2. Ravenclaw 3. Hufflepuff 4. Slytherin. Gryffindor beats all other houses, Ravenclaw beats Hufflepuff and Slytherin, Hufflepuff beats only Slytherin and Slytherin doesn't win hatstalls. Sometime the pet choice can resolve the hatstall by favoring one of the houses just enough. However with the majority of pet choices the strongest house is selected. Furthermore, we still don't know what the precise conditions for a hatstall are.</p>
+        
+        <p><strong>UPDATE</strong>: See also <a href="https://www.reddit.com/r/Pottermore/comments/50vwj8/ilvermorny_sorting_quiz_analysis/">Ilvermorny Sorting Quiz Analysis</a></p>
+        
+        <hr>
+        
+        <h3>Results</h3>
+        
+        <p>The first/last three questions have a very clear correspondence. For each question two houses favor an option equally. Most of these converge to 75-25 percentages.</p>
+        
+        <h2>Dawn or dusk?</h2>
+        
+        <p><sup>1/3 occurrence, 3316 observations, question set #1</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Dawn</td>
+        <td align="left">73% (618/842)</td>
+        <td align="left">73% (567/776)</td>
+        <td align="left">30% (283/943)</td>
+        <td align="left">26% (196/755)</td>
+        </tr>
+        <tr>
+        <td align="left">Dusk</td>
+        <td align="left">27% (224/842)</td>
+        <td align="left">27% (209/776)</td>
+        <td align="left">70% (660/943)</td>
+        <td align="left">74% (559/755)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/XNNBch9.png">Graph</a></strong> | 
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/aBHHyEP.png">Dawn</a> | <a href="http://i.imgur.com/aMUo4kH.png">Dusk</a></p>
+        
+        <p>The percentages for Hufflepuff and Slytherin will probably not be equal, so I think a 30-70 distribution for Hufflepuff.</p>
+        
+        <ol>
+        <li>Dawn for Gryffindor and Ravenclaw.</li>
+        <li>Dusk for Hufflepuff and Slytherin.</li>
+        </ol>
+        
+        <h2>Forest or river?</h2>
+        
+        <p><sup>1/3 occurrence, 3276 observations, question set #1</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Forest</td>
+        <td align="left">74% (642/862)</td>
+        <td align="left">73% (566/775)</td>
+        <td align="left">26% (241/910)</td>
+        <td align="left">28% (207/729)</td>
+        </tr>
+        <tr>
+        <td align="left">River</td>
+        <td align="left">26% (220/862)</td>
+        <td align="left">27% (209/775)</td>
+        <td align="left">74% (669/910)</td>
+        <td align="left">72% (522/729)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/RCRCE48.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/h3w9fyA.png">Forest</a> | <a href="http://i.imgur.com/SB7nRh9.png">River</a></p>
+        
+        <ol>
+        <li>Forest for Gryffindor and Ravenclaw.</li>
+        <li>River for Hufflepuff and Slytherin.</li>
+        </ol>
+        
+        <h2>Moon or stars?</h2>
+        
+        <p><sup>1/3 occurrence, 3408 observations, question set #1</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Moon</td>
+        <td align="left">27% (233/851)</td>
+        <td align="left">74% (623/840)</td>
+        <td align="left">33% (324/981)</td>
+        <td align="left">72% (527/736)</td>
+        </tr>
+        <tr>
+        <td align="left">Stars</td>
+        <td align="left">73% (618/851)</td>
+        <td align="left">26% (217/840)</td>
+        <td align="left">67% (657/981)</td>
+        <td align="left">28% (209/736)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/zFZv4xT.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/3oub3QI.png">Moon</a> | <a href="http://i.imgur.com/NHpEeER.png">Stars</a></p>
+        
+        <p>Hufflepuff could have a 1/3-2/3 probability distribution for moon and stars.</p>
+        
+        <ol>
+        <li>Moon for Ravenclaw and Slytherin.</li>
+        <li>Stars for Gryffindor and Hufflepuff.</li>
+        </ol>
+        
+        <h2>Black or White?</h2>
+        
+        <p><sup>1/3 occurrence, 3247 observations, question set #8</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Black</td>
+        <td align="left">73% (609/830)</td>
+        <td align="left">29% (224/777)</td>
+        <td align="left">24% (228/945)</td>
+        <td align="left">72% (503/695)</td>
+        </tr>
+        <tr>
+        <td align="left">White</td>
+        <td align="left">27% (221/830)</td>
+        <td align="left">71% (553/777)</td>
+        <td align="left">76% (717/945)</td>
+        <td align="left">28% (192/695)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/MBvkFxm.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/ydZf08h.png">Black</a> | <a href="http://i.imgur.com/G3IpHV8.png">White</a></p>
+        
+        <p>Probably a 30-70 distribution for Ravenclaw.</p>
+        
+        <ol>
+        <li>Black for Gryffindor and Slytherin.</li>
+        <li>White for Ravenclaw and Hufflepuff.</li>
+        </ol>
+        
+        <h2>Heads or Tails</h2>
+        
+        <p><sup>1/3 occurrence, 3436 observations, question set #8</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Heads</td>
+        <td align="left">27% (225/841)</td>
+        <td align="left">69% (557/803)</td>
+        <td align="left">74% (723/980)</td>
+        <td align="left">27% (222/812)</td>
+        </tr>
+        <tr>
+        <td align="left">Tails</td>
+        <td align="left">73% (616/841)</td>
+        <td align="left">31% (246/803)</td>
+        <td align="left">26% (257/980)</td>
+        <td align="left">73% (590/812)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/ZQwbJFz.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/WvmXu7K.png">Head</a> | <a href="http://i.imgur.com/W3AahLr.png">Tails</a></p>
+        
+        <ol>
+        <li>Heads for Ravenclaw and Hufflepuff. </li>
+        <li>Tails for Gryffindor and Slytherin.</li>
+        </ol>
+        
+        <h2>Left or Right</h2>
+        
+        <p><sup>1/3 occurrence, 3317 observations, question set #8</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Left</td>
+        <td align="left">29% (254/884)</td>
+        <td align="left">70% (567/811)</td>
+        <td align="left">29% (261/909)</td>
+        <td align="left">73% (519/713)</td>
+        </tr>
+        <tr>
+        <td align="left">Right</td>
+        <td align="left">71% (630/884)</td>
+        <td align="left">30% (244/811)</td>
+        <td align="left">71% (648/909)</td>
+        <td align="left">27% (194/713)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/C49zeLv.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/AJYBO1D.png">Left</a> | <a href="http://i.imgur.com/t91LUzG.png">Right</a></p>
+        
+        <ol>
+        <li>Left for Ravenclaw and Slytherin.</li>
+        <li>Right for Gryffindor and Hufflepuff. </li>
+        </ol>
+        
+        <h2>Four boxes are placed before you. Which would you try and open?</h2>
+        
+        <p><sup>1/5 occurrence, 1983 observations, question set #3</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">The small tortoiseshell box, embellished with gold, inside which some small creature seems to be squeaking.</td>
+        <td align="left">14% (72/502)</td>
+        <td align="left">18% (80/454)</td>
+        <td align="left">46% (264/575)</td>
+        <td align="left">18% (82/452)</td>
+        </tr>
+        <tr>
+        <td align="left">The gleaming jet black box with a silver lock and key, marked with a mysterious rune that you know to be the mark of Merlin.</td>
+        <td align="left">18% (88/502)</td>
+        <td align="left">20% (91/454)</td>
+        <td align="left">16% (90/575)</td>
+        <td align="left">46% (209/452)</td>
+        </tr>
+        <tr>
+        <td align="left">The ornate golden casket, standing on clawed feet, whose inscription warns that both secret knowledge and unbearable temptation lie within.</td>
+        <td align="left">19% (96/502)</td>
+        <td align="left">44% (198/454)</td>
+        <td align="left">21% (121/575)</td>
+        <td align="left">19% (84/452)</td>
+        </tr>
+        <tr>
+        <td align="left">The small pewter box, unassuming and plain, with a scratched message upon it that reads ‘I open only for the worthy.’</td>
+        <td align="left">49% (246/502)</td>
+        <td align="left">19% (85/454)</td>
+        <td align="left">17% (100/575)</td>
+        <td align="left">17% (77/452)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/Dhae3MI.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/mTI9pbi.png">Tortoiseshell box</a> | <a href="http://i.imgur.com/PMJh9H2.png">Black box</a> | <a href="http://i.imgur.com/U7Tq1bC.png">Golden casket</a> | <a href="http://i.imgur.com/4jzSxhy.png">Pewter box</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = The small pewter box.</li>
+        <li>Ravenclaw = The ornate golden casket.</li>
+        <li>Hufflepuff = The small tortoiseshell box.</li>
+        <li>Slytherin = The gleaming jet black box.</li>
+        </ol>
+        
+        <h2>You and two friends need to cross a bridge guarded by a river troll who insists on fighting one of you before he will let all of you pass. Do you:</h2>
+        
+        <p><sup>1/6 occurrence, 1669 observations, question set #6</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Attempt to confuse the troll into letting all three of you pass without fighting?</td>
+        <td align="left">20% (86/428)</td>
+        <td align="left">44% (190/428)</td>
+        <td align="left">18% (82/459)</td>
+        <td align="left">23% (83/354)</td>
+        </tr>
+        <tr>
+        <td align="left">Suggest drawing lots to decide which of you will fight?</td>
+        <td align="left">16% (68/428)</td>
+        <td align="left">17% (72/428)</td>
+        <td align="left">47% (216/459)</td>
+        <td align="left">17% (59/354)</td>
+        </tr>
+        <tr>
+        <td align="left">Suggest that all three of you should fight (without telling the troll)?</td>
+        <td align="left">18% (77/428)</td>
+        <td align="left">19% (83/428)</td>
+        <td align="left">16% (75/459)</td>
+        <td align="left">42% (147/354)</td>
+        </tr>
+        <tr>
+        <td align="left">Volunteer to fight?</td>
+        <td align="left">46% (197/428)</td>
+        <td align="left">19% (83/428)</td>
+        <td align="left">19% (86/459)</td>
+        <td align="left">18% (65/354)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/Dhae3MI.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/R2lO01C.png">1</a> | <a href="http://i.imgur.com/6IwCgS5.png">2</a> | <a href="http://i.imgur.com/9aijzJc.png">3</a> | <a href="http://i.imgur.com/Mh8YPCU.png">4</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = Volunteer to fight?</li>
+        <li>Ravenclaw = Attempt to confuse the troll.</li>
+        <li>Hufflepuff = Suggest drawing lots.</li>
+        <li>Slytherin = Suggest that all three fight.</li>
+        </ol>
+        
+        <h2>Once every century, the Flutterby bush produces flowers that adapt their scent to attract the unwary. If it lured you, it would smell of:</h2>
+        
+        <p><sup>1/5 occurrence, 2021 observations, question set #3</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">A crackling log fire</td>
+        <td align="left">44% (237/534)</td>
+        <td align="left">17% (88/506)</td>
+        <td align="left">16% (90/548)</td>
+        <td align="left">21% (89/433)</td>
+        </tr>
+        <tr>
+        <td align="left">The sea</td>
+        <td align="left">21% (110/534)</td>
+        <td align="left">22% (112/506)</td>
+        <td align="left">18% (99/548)</td>
+        <td align="left">46% (201/433)</td>
+        </tr>
+        <tr>
+        <td align="left">Fresh parchment</td>
+        <td align="left">16% (83/534)</td>
+        <td align="left">45% (230/506)</td>
+        <td align="left">22% (122/548)</td>
+        <td align="left">15% (66/433)</td>
+        </tr>
+        <tr>
+        <td align="left">Home</td>
+        <td align="left">19% (104/534)</td>
+        <td align="left">15% (76/506)</td>
+        <td align="left">43% (237/548)</td>
+        <td align="left">18% (77/433)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/Dhae3MI.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/xOfOeOm.png">Log Fire</a> | <a href="http://i.imgur.com/XQezFd3.png">Parchment</a> | <a href="http://i.imgur.com/kmjyV9Y.png">Home</a> | <a href="http://i.imgur.com/pRyyYco.png">Sea</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = A crackling log fire.</li>
+        <li>Ravenclaw = Fresh parchment.</li>
+        <li>Hufflepuff = Home.</li>
+        <li>Slytherin = The sea.</li>
+        </ol>
+        
+        <h2>One of your house mates has cheated in a Hogwarts exam by using a Self-Spelling Quill. Now he has come top of the class in Charms, beating you into second place. Professor Flitwick is suspicious of what happened. He draws you to one side after his lesson and asks you whether or not your classmate used a forbidden quill. What do you do?</h2>
+        
+        <p><sup>1/6 occurrence, 1692 observations, question set #6</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Lie and say you don’t know (but hope that somebody else tells Professor Flitwick the truth).</td>
+        <td align="left">17% (72/414)</td>
+        <td align="left">14% (57/408)</td>
+        <td align="left">43% (202/473)</td>
+        <td align="left">18% (72/397)</td>
+        </tr>
+        <tr>
+        <td align="left">Tell Professor Flitwick that he ought to ask your classmate (and resolve to tell your classmate that if he doesn’t tell the truth, you will).</td>
+        <td align="left">43% (178/414)</td>
+        <td align="left">16% (67/408)</td>
+        <td align="left">22% (103/473)</td>
+        <td align="left">14% (55/397)</td>
+        </tr>
+        <tr>
+        <td align="left">Tell Professor Flitwick the truth. If your classmate is prepared to win by cheating, he deserves to be found out. Also, as you are both in the same house, any points he loses will be regained by you, for coming first in his place.</td>
+        <td align="left">22% (90/414)</td>
+        <td align="left">45% (184/408)</td>
+        <td align="left">16% (78/473)</td>
+        <td align="left">19% (76/397)</td>
+        </tr>
+        <tr>
+        <td align="left">You would not wait to be asked to tell Professor Flitwick the truth. If you knew that somebody was using a forbidden quill, you would tell the teacher before the exam started.</td>
+        <td align="left">18% (74/414)</td>
+        <td align="left">25% (100/408)</td>
+        <td align="left">19% (90/473)</td>
+        <td align="left">49% (194/397)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/6dLREqI.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/md6YbYo.png">1</a> | <a href="http://i.imgur.com/jg16hT2.png">2</a> | <a href="http://i.imgur.com/TVglrLA.png">3</a> | <a href="http://i.imgur.com/dyAE5jV.png">4</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = Tell Professor Flitwick to ask your classmate.</li>
+        <li>Ravenclaw = Tell Professor Flitwick the truth.</li>
+        <li>Hufflepuff = Lie and say you don’t know.</li>
+        <li>Slytherin = Don't wait and tell before the exam started.</li>
+        </ol>
+        
+        <h2>Which of the following do you find most difficult to deal with?</h2>
+        
+        <p><sup>1/3 occurrence, 3354 observations, question set #4</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Hunger</td>
+        <td align="left">10% (83/798)</td>
+        <td align="left">29% (225/773)</td>
+        <td align="left">28% (276/983)</td>
+        <td align="left">10% (78/800)</td>
+        </tr>
+        <tr>
+        <td align="left">Cold</td>
+        <td align="left">14% (109/798)</td>
+        <td align="left">14% (105/773)</td>
+        <td align="left">25% (250/983)</td>
+        <td align="left">26% (211/800)</td>
+        </tr>
+        <tr>
+        <td align="left">Loneliness</td>
+        <td align="left">32% (259/798)</td>
+        <td align="left">13% (99/773)</td>
+        <td align="left">24% (240/983)</td>
+        <td align="left">9% (73/800)</td>
+        </tr>
+        <tr>
+        <td align="left">Boredom</td>
+        <td align="left">32% (258/798)</td>
+        <td align="left">13% (100/773)</td>
+        <td align="left">10% (100/983)</td>
+        <td align="left">28% (224/800)</td>
+        </tr>
+        <tr>
+        <td align="left">Being ignored</td>
+        <td align="left">11% (89/798)</td>
+        <td align="left">32% (244/773)</td>
+        <td align="left">12% (117/983)</td>
+        <td align="left">27% (214/800)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/ivCCYwl.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/PocZ3RG.png">Hunger</a> | <a href="http://i.imgur.com/FhWJ4AM.png">Cold</a> | <a href="http://i.imgur.com/YbL8MFV.png">Loneliness</a> | <a href="http://i.imgur.com/NBpISiA.png">Boredom</a> | <a href="http://i.imgur.com/e4G7MpI.png">Being ignored</a></p>
+        
+        <p>This is a pretty strange distribution. 
+        Gryffindor and Ravenclaw both have primary answers and both favor 2 answers. 
+        Hufflepuff and Slytherin either score equal or second to another house, but they both favor 3 answers.
+        I think the last three answers make the most sense given the houses' traits.</p>
+        
+        <ol>
+        <li>Hunger = Ravenclaw and Hufflepuff equally.</li>
+        <li>Cold = Hufflepuff and Slytherin equally.</li>
+        <li>Loneliness = Gryffindor primary and Hufflepuff secondary.</li>
+        <li>Boredom = Gryffindor primary and Slytherin secondary.</li>
+        <li>Being ignored = Ravenclaw primary and Slytherin secondary.</li>
+        </ol>
+        
+        <ul>
+        <li>Slytherin is most resistant to loneliness and Hufflepuff is most resistant to boredom.</li>
+        </ul>
+        
+        <h2>You enter an enchanted garden. What would you be most curious to examine first?</h2>
+        
+        <p><sup>1/5 occurrence, 1967 observations, question set #3</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">The silver leafed tree bearing golden apples</td>
+        <td align="left">17% (88/512)</td>
+        <td align="left">45% (203/448)</td>
+        <td align="left">18% (104/563)</td>
+        <td align="left">16% (69/444)</td>
+        </tr>
+        <tr>
+        <td align="left">The fat red toadstools that appear to be talking to each other</td>
+        <td align="left">18% (92/512)</td>
+        <td align="left">15% (68/448)</td>
+        <td align="left">42% (236/563)</td>
+        <td align="left">17% (76/444)</td>
+        </tr>
+        <tr>
+        <td align="left">The bubbling pool, in the depths of which something luminous is swirling</td>
+        <td align="left">16% (82/512)</td>
+        <td align="left">22% (97/448)</td>
+        <td align="left">21% (117/563)</td>
+        <td align="left">46% (204/444)</td>
+        </tr>
+        <tr>
+        <td align="left">The statue of an old wizard with a strangely twinkling eye</td>
+        <td align="left">49% (250/512)</td>
+        <td align="left">18% (80/448)</td>
+        <td align="left">19% (106/563)</td>
+        <td align="left">21% (95/444)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/3tASDAU.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/0B2Qj5s.png">Tree</a> | <a href="http://i.imgur.com/PocZ3RG.png">Toadstool</a> | <a href="http://i.imgur.com/eZOEWdO.png">Pool</a> | <a href="http://i.imgur.com/F0nldk9.png">Statue</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = The statue of an old wizard.</li>
+        <li>Ravenclaw = The silver leafed tree.</li>
+        <li>Hufflepuff = The fat red toadstools.</li>
+        <li>Slytherin = The bubbling pool.</li>
+        </ol>
+        
+        <h2>Four goblets are placed before you. Which would you choose to drink?</h2>
+        
+        <p><sup>1/5 occurrence, 1984 observations, question set #3</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">The foaming, frothing, silvery liquid that sparkles as though containing ground diamonds.</td>
+        <td align="left">21% (107/501)</td>
+        <td align="left">44% (213/484)</td>
+        <td align="left">19% (109/576)</td>
+        <td align="left">18% (75/423)</td>
+        </tr>
+        <tr>
+        <td align="left">The smooth, thick, richly purple drink that gives off a delicious smell of chocolate and plums.</td>
+        <td align="left">19% (95/501)</td>
+        <td align="left">19% (91/484)</td>
+        <td align="left">43% (250/576)</td>
+        <td align="left">20% (85/423)</td>
+        </tr>
+        <tr>
+        <td align="left">The golden liquid so bright that it hurts the eye, and which makes sunspots dance all around the room.</td>
+        <td align="left">41% (207/501)</td>
+        <td align="left">18% (88/484)</td>
+        <td align="left">19% (108/576)</td>
+        <td align="left">19% (79/423)</td>
+        </tr>
+        <tr>
+        <td align="left">The mysterious black liquid that gleams like ink, and gives off fumes that make you see strange visions.</td>
+        <td align="left">18% (92/501)</td>
+        <td align="left">19% (92/484)</td>
+        <td align="left">19% (109/576)</td>
+        <td align="left">43% (184/423)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/ByMRD52.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/acirRfO.png">Silvery liquid</a> | <a href="http://i.imgur.com/mAEbl7I.png">Purple drink</a> | <a href="http://i.imgur.com/bSAzzqr.png">Golden liquid</a> | <a href="http://i.imgur.com/m6g4B8E.png">Black liquid</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = The golden liquid.</li>
+        <li>Ravenclaw = The foaming, frothing, silvery liquid .</li>
+        <li>Hufflepuff = The smooth, thick, richly purple drink.</li>
+        <li>Slytherin = The mysterious black liquid.</li>
+        </ol>
+        
+        <h2>What kind of instrument most pleases your ear?</h2>
+        
+        <p><sup>1/5 occurrence, 2045 observations, question set #3</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">The violin</td>
+        <td align="left">17% (86/506)</td>
+        <td align="left">20% (99/499)</td>
+        <td align="left">20% (113/572)</td>
+        <td align="left">48% (223/468)</td>
+        </tr>
+        <tr>
+        <td align="left">The trumpet</td>
+        <td align="left">18% (90/506)</td>
+        <td align="left">17% (87/499)</td>
+        <td align="left">44% (253/572)</td>
+        <td align="left">18% (83/468)</td>
+        </tr>
+        <tr>
+        <td align="left">The piano</td>
+        <td align="left">21% (108/506)</td>
+        <td align="left">46% (228/499)</td>
+        <td align="left">19% (107/572)</td>
+        <td align="left">18% (86/468)</td>
+        </tr>
+        <tr>
+        <td align="left">The drum</td>
+        <td align="left">44% (222/506)</td>
+        <td align="left">17% (85/499)</td>
+        <td align="left">17% (99/572)</td>
+        <td align="left">16% (76/468)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/mj0VKEw.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/qW9Bu6d.png">The violin</a> | <a href="http://i.imgur.com/faETVaf.png">The trumpet</a> | <a href="http://i.imgur.com/9b6uWna.png">The piano</a> | <a href="http://i.imgur.com/qIsCHmE.png">The drum</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = The drum.</li>
+        <li>Ravenclaw = The piano.</li>
+        <li>Hufflepuff = The trumpet.</li>
+        <li>Slytherin = The violin.</li>
+        </ol>
+        
+        <h2>Which of the following would you most hate people to call you?</h2>
+        
+        <p><sup>1/4 occurrence, 2467 observations, question set #2</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Ordinary</td>
+        <td align="left">17% (107/635)</td>
+        <td align="left">18% (104/578)</td>
+        <td align="left">19% (132/709)</td>
+        <td align="left">45% (244/545)</td>
+        </tr>
+        <tr>
+        <td align="left">Ignorant</td>
+        <td align="left">19% (119/635)</td>
+        <td align="left">50% (288/578)</td>
+        <td align="left">19% (138/709)</td>
+        <td align="left">17% (93/545)</td>
+        </tr>
+        <tr>
+        <td align="left">Cowardly</td>
+        <td align="left">47% (300/635)</td>
+        <td align="left">17% (97/578)</td>
+        <td align="left">18% (130/709)</td>
+        <td align="left">20% (111/545)</td>
+        </tr>
+        <tr>
+        <td align="left">Selfish</td>
+        <td align="left">17% (109/635)</td>
+        <td align="left">15% (89/578)</td>
+        <td align="left">44% (309/709)</td>
+        <td align="left">18% (97/545)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/E96D56q.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/Zw0VqJ4.png">Ordinary</a> | <a href="http://i.imgur.com/T6SNkEN.png">Ignorant</a> | <a href="http://i.imgur.com/zO0DYiV.png">Cowardly</a> | <a href="http://i.imgur.com/757a1xf.png">Selfish</a></p>
+        
+        <p>Each house corresponds to one answer. This one is very obvious given the houses' traits.</p>
+        
+        <ol>
+        <li>Gryffindor = Cowardly.</li>
+        <li>Ravenclaw = Ignorant.</li>
+        <li>Hufflepuff = Selfish.</li>
+        <li>Slytherin = Ordinary.</li>
+        </ol>
+        
+        <h2>After you have died, what would you most like people to do when they hear your name?</h2>
+        
+        <p><sup>1/4 occurrence, 2541 observations, question set #2</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Miss you, but smile</td>
+        <td align="left">18% (119/657)</td>
+        <td align="left">16% (97/598)</td>
+        <td align="left">42% (308/732)</td>
+        <td align="left">19% (103/554)</td>
+        </tr>
+        <tr>
+        <td align="left">Ask for more stories about your adventures</td>
+        <td align="left">46% (300/657)</td>
+        <td align="left">19% (112/598)</td>
+        <td align="left">14% (104/732)</td>
+        <td align="left">19% (105/554)</td>
+        </tr>
+        <tr>
+        <td align="left">Think with admiration of your achievements</td>
+        <td align="left">18% (121/657)</td>
+        <td align="left">45% (267/598)</td>
+        <td align="left">22% (158/732)</td>
+        <td align="left">17% (94/554)</td>
+        </tr>
+        <tr>
+        <td align="left">I don't care what people think of me after I'm dead; it's what they think of me while I'm alive that counts</td>
+        <td align="left">18% (117/657)</td>
+        <td align="left">20% (122/598)</td>
+        <td align="left">22% (162/732)</td>
+        <td align="left">45% (252/554)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/BGvzi3h.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/BLPhQi2.png">1</a> | <a href="http://i.imgur.com/8UNBzVl.png">2</a> | <a href="http://i.imgur.com/SZyoihr.png">3</a> | <a href="http://i.imgur.com/CIyOctf.png">4</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = Ask for more stories about your adventures.</li>
+        <li>Ravenclaw = Think with admiration of your achievements.</li>
+        <li>Hufflepuff = Miss you, but smile.</li>
+        <li>Slytherin = I don't care what people think of me after I'm dead.</li>
+        </ol>
+        
+        <h2>How would you like to be known to history?</h2>
+        
+        <p><sup>1/4 occurrence, 2495 observations, question set #2</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">The Wise</td>
+        <td align="left">19% (121/637)</td>
+        <td align="left">46% (272/597)</td>
+        <td align="left">19% (135/698)</td>
+        <td align="left">16% (88/563)</td>
+        </tr>
+        <tr>
+        <td align="left">The Good</td>
+        <td align="left">17% (108/637)</td>
+        <td align="left">16% (97/597)</td>
+        <td align="left">44% (307/698)</td>
+        <td align="left">17% (95/563)</td>
+        </tr>
+        <tr>
+        <td align="left">The Great</td>
+        <td align="left">20% (129/637)</td>
+        <td align="left">22% (129/597)</td>
+        <td align="left">20% (141/698)</td>
+        <td align="left">44% (248/563)</td>
+        </tr>
+        <tr>
+        <td align="left">The Bold</td>
+        <td align="left">44% (279/637)</td>
+        <td align="left">17% (99/597)</td>
+        <td align="left">16% (115/698)</td>
+        <td align="left">23% (132/563)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/hkl3ZZS.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/pAamqln.png">The Wise</a> | <a href="http://i.imgur.com/T3Ye5Fu.png">The Good</a> | <a href="http://i.imgur.com/LtJWdpl.png">The great</a> | <a href="http://i.imgur.com/rKXxrAF.png">The Bold</a></p>
+        
+        <p>Each house corresponds to one answer. This is also an obvious match with the house traits.</p>
+        
+        <ol>
+        <li>Gryffindor = The Bold.</li>
+        <li>Ravenclaw = The Wise.</li>
+        <li>Hufflepuff = The Good.</li>
+        <li>Slytherin = The Great.</li>
+        </ol>
+        
+        <h2>A Muggle confronts you and says that they are sure you are a witch or wizard. Do you:</h2>
+        
+        <p><sup>1/6 occurrence, 1631 observations, question set #6</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Ask what makes them think so?</td>
+        <td align="left">17% (70/418)</td>
+        <td align="left">45% (172/381)</td>
+        <td align="left">20% (95/473)</td>
+        <td align="left">17% (60/359)</td>
+        </tr>
+        <tr>
+        <td align="left">Agree, and ask whether they’d like a free sample of a jinx?</td>
+        <td align="left">21% (88/418)</td>
+        <td align="left">17% (63/381)</td>
+        <td align="left">20% (95/473)</td>
+        <td align="left">41% (146/359)</td>
+        </tr>
+        <tr>
+        <td align="left">Agree, and walk away, leaving them to wonder whether you are bluffing?</td>
+        <td align="left">47% (195/418)</td>
+        <td align="left">21% (80/381)</td>
+        <td align="left">15% (69/473)</td>
+        <td align="left">23% (82/359)</td>
+        </tr>
+        <tr>
+        <td align="left">Tell them that you are worried about their mental health, and offer to call a doctor.</td>
+        <td align="left">16% (65/418)</td>
+        <td align="left">17% (66/381)</td>
+        <td align="left">45% (214/473)</td>
+        <td align="left">20% (71/359)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/aBdPxST.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/6wViVwu.png">1</a> | <a href="http://i.imgur.com/pA0E5v4.png">2</a> | <a href="http://i.imgur.com/UjRDFZE.png">3</a> | <a href="http://i.imgur.com/GXYsEU1.png">4</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = Agree, and walk away, leaving them to wonder whether you are bluffing?</li>
+        <li>Ravenclaw = Ask what makes them think so.</li>
+        <li>Hufflepuff = Tell them that you are worried about their mental health.</li>
+        <li>Slytherin = Agree, and ask whether they’d like a free sample of a jinx?</li>
+        </ol>
+        
+        <h2>Which nightmare would frighten you most?</h2>
+        
+        <p><sup>1/6 occurrence, 1723 observations, question set #6</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Standing on top of something very high and realizing suddenly that there are no hand- or footholds, nor any barrier to stop you falling.</td>
+        <td align="left">20% (86/427)</td>
+        <td align="left">46% (196/426)</td>
+        <td align="left">18% (90/491)</td>
+        <td align="left">20% (74/379)</td>
+        </tr>
+        <tr>
+        <td align="left">An eye at the keyhole of the dark, windowless room in which you are locked.</td>
+        <td align="left">45% (193/427)</td>
+        <td align="left">18% (77/426)</td>
+        <td align="left">17% (84/491)</td>
+        <td align="left">18% (68/379)</td>
+        </tr>
+        <tr>
+        <td align="left">Waking up to find that neither your friends nor your family have any idea who you are.</td>
+        <td align="left">17% (71/427)</td>
+        <td align="left">15% (63/426)</td>
+        <td align="left">45% (219/491)</td>
+        <td align="left">15% (58/379)</td>
+        </tr>
+        <tr>
+        <td align="left">Being forced to speak in such a silly voice that hardly anyone can understand you, and everyone laughs at you.</td>
+        <td align="left">18% (77/427)</td>
+        <td align="left">21% (90/426)</td>
+        <td align="left">20% (98/491)</td>
+        <td align="left">47% (179/379)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/CrGHUov.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/x5AAm98.png">1</a> | <a href="http://i.imgur.com/7e4uM94.png">2</a> | <a href="http://i.imgur.com/hvjqLUp.png">3</a> | <a href="http://i.imgur.com/7xwG7Ec.png">4</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = An eye at the keyhole.</li>
+        <li>Ravenclaw = Standing on top of something very high.</li>
+        <li>Hufflepuff = Your friends nor your family have any idea who you are.</li>
+        <li>Slytherin = Being forced to speak in such a silly voice.</li>
+        </ol>
+        
+        <h2>If you were attending Hogwarts, which pet would you choose to take with you?</h2>
+        
+        <p><sup>100% occurrence, 10000 observations, question set #7</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Tabby cat</td>
+        <td align="left">9% (229/2555)</td>
+        <td align="left">5% (125/2391)</td>
+        <td align="left">4% (116/2834)</td>
+        <td align="left">8% (183/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Siamese cat</td>
+        <td align="left">7% (186/2555)</td>
+        <td align="left">5% (115/2391)</td>
+        <td align="left">5% (133/2834)</td>
+        <td align="left">12% (260/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Ginger cat</td>
+        <td align="left">8% (194/2555)</td>
+        <td align="left">5% (119/2391)</td>
+        <td align="left">5% (140/2834)</td>
+        <td align="left">11% (252/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Black cat</td>
+        <td align="left">6% (166/2555)</td>
+        <td align="left">5% (109/2391)</td>
+        <td align="left">5% (138/2834)</td>
+        <td align="left">11% (251/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">White cat</td>
+        <td align="left">6% (141/2555)</td>
+        <td align="left">5% (131/2391)</td>
+        <td align="left">5% (148/2834)</td>
+        <td align="left">10% (231/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Tawny owl</td>
+        <td align="left">6% (149/2555)</td>
+        <td align="left">11% (265/2391)</td>
+        <td align="left">5% (133/2834)</td>
+        <td align="left">4% (91/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Screech owl</td>
+        <td align="left">7% (173/2555)</td>
+        <td align="left">9% (221/2391)</td>
+        <td align="left">4% (120/2834)</td>
+        <td align="left">4% (88/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Brown owl</td>
+        <td align="left">7% (174/2555)</td>
+        <td align="left">11% (268/2391)</td>
+        <td align="left">5% (139/2834)</td>
+        <td align="left">5% (116/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Snowy owl</td>
+        <td align="left">5% (131/2555)</td>
+        <td align="left">7% (169/2391)</td>
+        <td align="left">8% (218/2834)</td>
+        <td align="left">5% (113/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Barn owl</td>
+        <td align="left">6% (150/2555)</td>
+        <td align="left">11% (263/2391)</td>
+        <td align="left">5% (131/2834)</td>
+        <td align="left">5% (116/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Common toad</td>
+        <td align="left">7% (172/2555)</td>
+        <td align="left">4% (98/2391)</td>
+        <td align="left">12% (328/2834)</td>
+        <td align="left">4% (96/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Natterjack toad</td>
+        <td align="left">6% (155/2555)</td>
+        <td align="left">5% (109/2391)</td>
+        <td align="left">11% (323/2834)</td>
+        <td align="left">4% (95/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Dragon toad</td>
+        <td align="left">9% (236/2555)</td>
+        <td align="left">5% (122/2391)</td>
+        <td align="left">7% (212/2834)</td>
+        <td align="left">5% (119/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Harlequin toad</td>
+        <td align="left">6% (157/2555)</td>
+        <td align="left">4% (100/2391)</td>
+        <td align="left">11% (313/2834)</td>
+        <td align="left">5% (103/2220)</td>
+        </tr>
+        <tr>
+        <td align="left">Three toed tree toad</td>
+        <td align="left">6% (142/2555)</td>
+        <td align="left">7% (177/2391)</td>
+        <td align="left">9% (242/2834)</td>
+        <td align="left">5% (106/2220)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/0HjQSgU.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/8jEOpav.png">Tabby cat</a> | <a href="http://i.imgur.com/CkbtE34.png">Siamese cat</a> | <a href="http://i.imgur.com/whFSAWH.png">Ginger cat</a> | <a href="http://i.imgur.com/PqX3dA8.png">Black cat</a> | <a href="http://i.imgur.com/kDaU5HN.png">White cat</a> | <a href="http://i.imgur.com/gwP30YR.png">Tawny owl</a> | <a href="http://i.imgur.com/cqBVPhH.png">Screech owl</a> | <a href="http://i.imgur.com/Sse0uWu.png">Brown owl</a> | <a href="http://i.imgur.com/JL7PHdR.png">Snowy owl</a> | <a href="http://i.imgur.com/mJ3Nba0.png">Barn owl</a> | <a href="http://i.imgur.com/k8fGOlT.png">Common toad</a> | <a href="http://i.imgur.com/7BgexRv.png">Natterjack toad</a> | <a href="http://i.imgur.com/uSWi80H.png">Dragon Toad</a> | <a href="http://i.imgur.com/baHb0gS.png">Harlequin toad</a> | <a href="http://i.imgur.com/JMzd1KH.png">Three toed tree toad</a></p>
+        
+        <ul>
+        <li>Gryffindor seems to have a preference for the Dragon toad and the Tabby cat but favors the other pets more or less equally.</li>
+        <li>Ravenclaw favors owls most along with the Three toed tree toad, then cats and toads equally.</li>
+        <li>Hufflepuff favors toads most along with the Snowy owl, then owls and cats equally.</li>
+        <li>Slytherin favors cats most (with a slight dislike for the tabby cat), then owls and toads equally.</li>
+        </ul>
+        
+        <p>Based on these observations I think the best indicators for a house are:</p>
+        
+        <ol>
+        <li>Gryffindor = Dragon toad and Tabby cat</li>
+        <li>Ravenclaw = Tawny owl, Brown owl and Barn owl. Then Screech owl, Snowy owl and Three toed tree toad.</li>
+        <li>Hufflepuff = Common toad, Natterjack, Harlequin toad. Then Three toed tree toad, Dragon toad and Snowy owl.</li>
+        <li>Slytherin = All cats (but the Tabby cat is most likely an indicator of Gryffindor).</li>
+        </ol>
+        
+        <h2>Given the choice, would you rather invent a potion that would guarantee you:</h2>
+        
+        <p><sup>1/4 occurrence, 2497 observations, question set #2</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Love?</td>
+        <td align="left">19% (120/626)</td>
+        <td align="left">18% (113/618)</td>
+        <td align="left">44% (303/695)</td>
+        <td align="left">20% (114/558)</td>
+        </tr>
+        <tr>
+        <td align="left">Glory?</td>
+        <td align="left">47% (294/626)</td>
+        <td align="left">19% (115/618)</td>
+        <td align="left">17% (118/695)</td>
+        <td align="left">17% (97/558)</td>
+        </tr>
+        <tr>
+        <td align="left">Wisdom?</td>
+        <td align="left">18% (112/626)</td>
+        <td align="left">43% (268/618)</td>
+        <td align="left">20% (136/695)</td>
+        <td align="left">18% (98/558)</td>
+        </tr>
+        <tr>
+        <td align="left">Power?</td>
+        <td align="left">16% (100/626)</td>
+        <td align="left">20% (122/618)</td>
+        <td align="left">20% (138/695)</td>
+        <td align="left">45% (249/558)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/EfhTtJJ.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/yBmfXmJ.png">Love</a> | <a href="http://i.imgur.com/y5s4rKP.png">Glory</a> | <a href="http://i.imgur.com/YKOU4r1.png">Wisdom</a> | <a href="http://i.imgur.com/K1rB6It.png">Power</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = Glory.</li>
+        <li>Ravenclaw = Wisdom.</li>
+        <li>Hufflepuff = Love.</li>
+        <li>Slytherin = Power.</li>
+        </ol>
+        
+        <h2>If you could have any power, which would you choose?</h2>
+        
+        <p><sup>1/3 occurrence, 3332 observations, question set #5</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">The power to read minds</td>
+        <td align="left">10% (70/716)</td>
+        <td align="left">22% (188/851)</td>
+        <td align="left">10% (100/992)</td>
+        <td align="left">22% (173/773)</td>
+        </tr>
+        <tr>
+        <td align="left">The power of invisibility</td>
+        <td align="left">33% (235/716)</td>
+        <td align="left">10% (85/851)</td>
+        <td align="left">14% (143/992)</td>
+        <td align="left">13% (98/773)</td>
+        </tr>
+        <tr>
+        <td align="left">The power of superhuman strength</td>
+        <td align="left">13% (94/716)</td>
+        <td align="left">9% (74/851)</td>
+        <td align="left">26% (253/992)</td>
+        <td align="left">18% (136/773)</td>
+        </tr>
+        <tr>
+        <td align="left">The power to speak to animals</td>
+        <td align="left">11% (78/716)</td>
+        <td align="left">19% (160/851)</td>
+        <td align="left">24% (237/992)</td>
+        <td align="left">9% (70/773)</td>
+        </tr>
+        <tr>
+        <td align="left">The power to change the past</td>
+        <td align="left">18% (130/716)</td>
+        <td align="left">13% (109/851)</td>
+        <td align="left">13% (127/992)</td>
+        <td align="left">28% (220/773)</td>
+        </tr>
+        <tr>
+        <td align="left">The power to change your appearance at will</td>
+        <td align="left">15% (109/716)</td>
+        <td align="left">28% (235/851)</td>
+        <td align="left">13% (132/992)</td>
+        <td align="left">10% (76/773)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/7X2mdrl.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/uYMuDjV.png">Read minds</a> | <a href="http://i.imgur.com/KzeCxG4.png">Invisibility</a> | <a href="http://i.imgur.com/e4G7MpI.png">Superhuman strength</a> | <a href="http://i.imgur.com/WgVSQkQ.png">Speak to animals</a> | <a href="http://i.imgur.com/ZB4zBFF.png">Change the past</a> | <a href="http://i.imgur.com/hssprpf.png">Change your appearance</a></p>
+        
+        <p>All houses have their own answer and can score on other answers as well.</p>
+        
+        <ol>
+        <li>Gryffindor = Power of invisibility primary, power to change the past secondary.</li>
+        <li>Ravenclaw = The power to change appearance primary and the power to read minds (along with Slytherin).</li>
+        <li>Hufflepuff = Superhuman strength and the power to speak to animals both primary.</li>
+        <li>Slytherin = The power to change the past primary, superhuman strength (second to Hufflepuff) and power to read minds secondary (along with Ravenclaw).</li>
+        </ol>
+        
+        <h2>Which road tempts you most?</h2>
+        
+        <p><sup>1/6 occurrence, 1646 observations, question set #6</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">The wide, sunny, grassy lane</td>
+        <td align="left">18% (81/445)</td>
+        <td align="left">14% (51/363)</td>
+        <td align="left">41% (188/455)</td>
+        <td align="left">18% (68/383)</td>
+        </tr>
+        <tr>
+        <td align="left">The narrow, dark, lantern-lit alley</td>
+        <td align="left">19% (86/445)</td>
+        <td align="left">20% (74/363)</td>
+        <td align="left">17% (76/455)</td>
+        <td align="left">44% (170/383)</td>
+        </tr>
+        <tr>
+        <td align="left">The twisting, leaf-strewn path through woods</td>
+        <td align="left">44% (194/445)</td>
+        <td align="left">22% (81/363)</td>
+        <td align="left">19% (88/455)</td>
+        <td align="left">23% (90/383)</td>
+        </tr>
+        <tr>
+        <td align="left">The cobbled street lined with ancient buildings</td>
+        <td align="left">19% (84/445)</td>
+        <td align="left">43% (157/363)</td>
+        <td align="left">23% (103/455)</td>
+        <td align="left">14% (55/383)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/O81RFav.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/9a0SYeV.png">1</a> | <a href="http://i.imgur.com/hksbtmD.png">2</a> | <a href="http://i.imgur.com/Erw4iGZ.png">3</a> | <a href="http://i.imgur.com/d0cBlUg.png">4</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = The twisting, leaf-strewn path through woods.</li>
+        <li>Ravenclaw = The cobbled street lined with ancient buildings.</li>
+        <li>Hufflepuff = The wide, sunny, grassy lane.</li>
+        <li>Slytherin = The narrow, dark, lantern-lit alley.</li>
+        </ol>
+        
+        <h2>Late at night, walking alone down the street, you hear a peculiar cry that you believe to have a magical source. Do you:</h2>
+        
+        <p><sup>1/6 occurrence, 1639 observations, question set #6</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Proceed with caution, keeping one hand on your concealed wand and an eye out for any disturbance?</td>
+        <td align="left">19% (80/423)</td>
+        <td align="left">17% (65/385)</td>
+        <td align="left">43% (210/483)</td>
+        <td align="left">21% (72/348)</td>
+        </tr>
+        <tr>
+        <td align="left">Draw your wand and try to discover the source of the noise?</td>
+        <td align="left">45% (192/423)</td>
+        <td align="left">21% (79/385)</td>
+        <td align="left">17% (82/483)</td>
+        <td align="left">19% (65/348)</td>
+        </tr>
+        <tr>
+        <td align="left">Draw your wand and stand your ground?</td>
+        <td align="left">17% (71/423)</td>
+        <td align="left">19% (72/385)</td>
+        <td align="left">19% (91/483)</td>
+        <td align="left">42% (146/348)</td>
+        </tr>
+        <tr>
+        <td align="left">Withdraw into the shadows to await developments, while mentally reviewing the most appropriate defensive and offensive spells, should trouble occur?</td>
+        <td align="left">19% (80/423)</td>
+        <td align="left">44% (169/385)</td>
+        <td align="left">21% (100/483)</td>
+        <td align="left">19% (65/348)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/eY9qt0T.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/3nUYBFm.png">1</a> | <a href="http://i.imgur.com/VZDhR03.png">2</a> | <a href="http://i.imgur.com/BPieQd5.png">3</a> | <a href="http://i.imgur.com/Q5XzTdE.png">4</a></p>
+        
+        <p>Each house corresponds to one answer.</p>
+        
+        <ol>
+        <li>Gryffindor = Draw your wand and try to discover the source of the noise.</li>
+        <li>Ravenclaw = Withdraw into the shadows to await developments.</li>
+        <li>Hufflepuff = Proceed with caution.</li>
+        <li>Slytherin = Draw your wand and stand your ground.</li>
+        </ol>
+        
+        <h2>What are you most looking forward to learning at Hogwarts?</h2>
+        
+        <p><sup>1/3 occurrence, 3340 observations, question set #5</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Apparition and Disapparition (being able to materialize and dematerialize at will)</td>
+        <td align="left">19% (197/1012)</td>
+        <td align="left">6% (48/743)</td>
+        <td align="left">9% (80/906)</td>
+        <td align="left">23% (156/679)</td>
+        </tr>
+        <tr>
+        <td align="left">Transfiguration (turning one object into another object)</td>
+        <td align="left">9% (88/1012)</td>
+        <td align="left">27% (198/743)</td>
+        <td align="left">13% (114/906)</td>
+        <td align="left">12% (79/679)</td>
+        </tr>
+        <tr>
+        <td align="left">Flying on a broomstick</td>
+        <td align="left">19% (192/1012)</td>
+        <td align="left">7% (53/743)</td>
+        <td align="left">18% (160/906)</td>
+        <td align="left">9% (58/679)</td>
+        </tr>
+        <tr>
+        <td align="left">Hexes and jinxes</td>
+        <td align="left">10% (97/1012)</td>
+        <td align="left">11% (82/743)</td>
+        <td align="left">11% (101/906)</td>
+        <td align="left">28% (188/679)</td>
+        </tr>
+        <tr>
+        <td align="left">All about magical creatures, and how to befriend/care for them</td>
+        <td align="left">9% (88/1012)</td>
+        <td align="left">9% (70/743)</td>
+        <td align="left">27% (246/906)</td>
+        <td align="left">10% (65/679)</td>
+        </tr>
+        <tr>
+        <td align="left">Secrets about the castle</td>
+        <td align="left">24% (241/1012)</td>
+        <td align="left">13% (95/743)</td>
+        <td align="left">11% (102/906)</td>
+        <td align="left">9% (63/679)</td>
+        </tr>
+        <tr>
+        <td align="left">Every area of magic I can</td>
+        <td align="left">11% (109/1012)</td>
+        <td align="left">27% (197/743)</td>
+        <td align="left">11% (103/906)</td>
+        <td align="left">10% (70/679)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/5Ql06jk.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/almi6Fc.png">Apparition and Disapparition</a> | <a href="http://i.imgur.com/abJrwdR.png">Transfiguration</a> | <a href="http://i.imgur.com/u7iREAS.png">Flying on a broomstick</a> | <a href="http://i.imgur.com/VPrUIdC.png">Hexes and jinxes</a> | <a href="http://i.imgur.com/p61bFlX.png">Magical creatures</a> | <a href="http://i.imgur.com/w5ObrMI.png">Secrets about the castle</a> | <a href="http://i.imgur.com/gz3zbb8.png">Every area of magic</a></p>
+        
+        <p>Ravenclaw and Slytherin both have two primary answers. Gryffindor and Hufflepuff have primary answers and secondary answers.</p>
+        
+        <ol>
+        <li>Gryffindor = Secrets about the castle primary, flying on a broomstick (along with Hufflepuff) and Apparition and Disapparition (second to Slytherin) secondary.</li>
+        <li>Ravenclaw = Transfiguration and every area of magic primary.</li>
+        <li>Hufflepuff = Magical creatures primary, flying on broomstick secondary (along with Gryffindor).</li>
+        <li>Slytherin = Hexes and jinxes and Apparition and Disapparition primary.</li>
+        </ol>
+        
+        <h2>Which of the following would you most like to study?</h2>
+        
+        <p><sup>1/3 occurrence, 3328 observations, question set #5</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Centaurs</td>
+        <td align="left">20% (166/827)</td>
+        <td align="left">19% (148/797)</td>
+        <td align="left">8% (75/936)</td>
+        <td align="left">8% (62/768)</td>
+        </tr>
+        <tr>
+        <td align="left">Goblins</td>
+        <td align="left">10% (80/827)</td>
+        <td align="left">23% (187/797)</td>
+        <td align="left">9% (81/936)</td>
+        <td align="left">16% (120/768)</td>
+        </tr>
+        <tr>
+        <td align="left">Merpeople</td>
+        <td align="left">9% (76/827)</td>
+        <td align="left">8% (62/797)</td>
+        <td align="left">20% (191/936)</td>
+        <td align="left">20% (152/768)</td>
+        </tr>
+        <tr>
+        <td align="left">Ghosts</td>
+        <td align="left">24% (197/827)</td>
+        <td align="left">23% (180/797)</td>
+        <td align="left">8% (77/936)</td>
+        <td align="left">6% (46/768)</td>
+        </tr>
+        <tr>
+        <td align="left">Vampires</td>
+        <td align="left">9% (77/827)</td>
+        <td align="left">12% (94/797)</td>
+        <td align="left">12% (116/936)</td>
+        <td align="left">26% (197/768)</td>
+        </tr>
+        <tr>
+        <td align="left">Werewolves</td>
+        <td align="left">22% (182/827)</td>
+        <td align="left">8% (63/797)</td>
+        <td align="left">20% (188/936)</td>
+        <td align="left">6% (45/768)</td>
+        </tr>
+        <tr>
+        <td align="left">Trolls</td>
+        <td align="left">6% (49/827)</td>
+        <td align="left">8% (63/797)</td>
+        <td align="left">22% (208/936)</td>
+        <td align="left">19% (146/768)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/YtwI8QF.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/V7LiiA8.png">Centaurs</a> | <a href="http://i.imgur.com/jsLjGms.png">Goblins</a> | <a href="http://i.imgur.com/veCzkBG.png">Merpeople</a> | <a href="http://i.imgur.com/CnDsnvT.png">Ghosts</a> | <a href="http://i.imgur.com/IW6rJWe.png">Vampires</a> | <a href="http://i.imgur.com/vxhBcm3.png">Werewolves</a> | <a href="http://i.imgur.com/ocfXZjM.png">Trolls</a></p>
+        
+        <p>I am not sure if Gryffindor and Ravenclaw score equally on centaurs and ghosts or if they are both Gryffindor primarily. The same goes for werewolves, the differences on those questions are quite small. For now I'll just call all of them Gryffindor primary answers. Goblins are clearly associated with Ravenclaw, Vampires with Slytherin and Hufflepuff with trolls.</p>
+        
+        <ol>
+        <li>Gryffindor = Werewolves, centaurs and ghosts primary.</li>
+        <li>Ravenclaw = Goblins primary, centaurs and ghosts secondary.</li>
+        <li>Hufflepuff = Trolls primary, merpeople (along with Slytherin) and werewolves (second to Gryffindor) secondary.</li>
+        <li>Slytherin = Vampires primary, trolls and merpeople (along with Hufflepuff) secondary.</li>
+        </ol>
+        
+        <h2>A troll has gone berserk in the Headmaster’s study at Hogwarts. It is about to smash, crush and tear several irreplaceable items and treasures. In which order would you rescue these objects from the troll’s club, if you could?</h2>
+        
+        <p><sup>1/3 occurrence, 3302 observations, question set #4</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">First, a nearly perfected cure for dragon pox. Then student records going back 1000 years. Finally, a mysterious handwritten book full of strange runes.</td>
+        <td align="left">23% (208/892)</td>
+        <td align="left">10% (82/823)</td>
+        <td align="left">22% (206/920)</td>
+        <td align="left">9% (59/667)</td>
+        </tr>
+        <tr>
+        <td align="left">First, student records going back 1000 years. Then a mysterious handwritten book full of strange runes. Finally, a nearly perfected cure for dragon pox.</td>
+        <td align="left">14% (125/892)</td>
+        <td align="left">11% (94/823)</td>
+        <td align="left">14% (130/920)</td>
+        <td align="left">31% (209/667)</td>
+        </tr>
+        <tr>
+        <td align="left">First, a mysterious handwritten book full of strange runes. Then a nearly perfected cure for dragon pox. Finally, student records going back 1000 years.</td>
+        <td align="left">12% (106/892)</td>
+        <td align="left">30% (247/823)</td>
+        <td align="left">13% (123/920)</td>
+        <td align="left">11% (72/667)</td>
+        </tr>
+        <tr>
+        <td align="left">First, a nearly perfected cure for dragon pox. Then a mysterious handwritten book full of strange runes. Finally, student records going back 1000 years.</td>
+        <td align="left">29% (257/892)</td>
+        <td align="left">12% (96/823)</td>
+        <td align="left">12% (107/920)</td>
+        <td align="left">13% (89/667)</td>
+        </tr>
+        <tr>
+        <td align="left">First student records going back 1000 years. Then, a nearly perfected cure for dragon pox. Finally, a mysterious handwritten book full of strange runes.</td>
+        <td align="left">13% (113/892)</td>
+        <td align="left">10% (79/823)</td>
+        <td align="left">28% (253/920)</td>
+        <td align="left">11% (75/667)</td>
+        </tr>
+        <tr>
+        <td align="left">First, a mysterious handwritten book full of strange runes. Then student records going back 1000 years. Finally, a nearly perfected cure for dragon pox.</td>
+        <td align="left">9% (83/892)</td>
+        <td align="left">27% (225/823)</td>
+        <td align="left">11% (101/920)</td>
+        <td align="left">24% (163/667)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/VOPzuU3.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/G16mOaq.png">1</a> | <a href="http://i.imgur.com/nyBeIJs.png">2</a> | <a href="http://i.imgur.com/9S3DugN.png">3</a> | <a href="http://i.imgur.com/oLX7ccR.png">4</a> | <a href="http://i.imgur.com/Q7vok8H.png">5</a> | <a href="http://i.imgur.com/Jjp3UYf.png">6</a></p>
+        
+        <p>Here each house has two favored answers. The defining traits for the four houses are probably as follows:</p>
+        
+        <ol>
+        <li>Gryffindor cares most about a nearly perfected cure for dragon pox.</li>
+        <li>Ravenclaw cares most about the mysterious handbook full of strange runes.</li>
+        <li>Hufflepuff cares least about the mysterious handbook full of strange runes.</li>
+        <li>Slytherin cares least about a nearly perfected cure for dragon pox.</li>
+        </ol>
+        
+        <p>The first and last question contain traits from 2 houses, so those houses score more or less equally.</p>
+        
+        <h2>Which would you rather be:</h2>
+        
+        <p><sup>1/3 occurrence, 3344 observations, question set #4</sup></p>
+        
+        <table><thead>
+        <tr>
+        <th align="left"></th>
+        <th align="left"><strong>Gryffindor</strong></th>
+        <th align="left"><strong>Ravenclaw</strong></th>
+        <th align="left"><strong>Hufflepuff</strong></th>
+        <th align="left"><strong>Slytherin</strong></th>
+        </tr>
+        </thead><tbody>
+        <tr>
+        <td align="left">Envied?</td>
+        <td align="left">10% (84/865)</td>
+        <td align="left">24% (190/795)</td>
+        <td align="left">10% (97/931)</td>
+        <td align="left">24% (183/753)</td>
+        </tr>
+        <tr>
+        <td align="left">Imitated?</td>
+        <td align="left">16% (141/865)</td>
+        <td align="left">31% (243/795)</td>
+        <td align="left">13% (121/931)</td>
+        <td align="left">12% (89/753)</td>
+        </tr>
+        <tr>
+        <td align="left">Trusted?</td>
+        <td align="left">23% (199/865)</td>
+        <td align="left">8% (63/795)</td>
+        <td align="left">23% (210/931)</td>
+        <td align="left">9% (66/753)</td>
+        </tr>
+        <tr>
+        <td align="left">Praised?</td>
+        <td align="left">24% (206/865)</td>
+        <td align="left">11% (87/795)</td>
+        <td align="left">11% (106/931)</td>
+        <td align="left">19% (144/753)</td>
+        </tr>
+        <tr>
+        <td align="left">Liked?</td>
+        <td align="left">15% (128/865)</td>
+        <td align="left">12% (94/795)</td>
+        <td align="left">29% (270/931)</td>
+        <td align="left">10% (77/753)</td>
+        </tr>
+        <tr>
+        <td align="left">Feared?</td>
+        <td align="left">12% (107/865)</td>
+        <td align="left">15% (118/795)</td>
+        <td align="left">14% (127/931)</td>
+        <td align="left">26% (194/753)</td>
+        </tr>
+        </tbody></table>
+        
+        <p><strong><a href="http://i.imgur.com/1hKIIIb.png">Graph</a></strong> |
+        <strong>Line plots</strong>
+        <a href="http://i.imgur.com/sRLZIPW.png">Envied</a> | <a href="http://i.imgur.com/iDhHxWb.png">Imitated</a> | <a href="http://i.imgur.com/ZM0LHS3.png">Trusted</a> | <a href="http://i.imgur.com/pWFLj3M.png">Praised</a> | <a href="http://i.imgur.com/ujeVruj.png">Liked</a> | <a href="http://i.imgur.com/koexw2W.png">Feared</a></p>
+        
+        <p>I think here each house has it's primary answer where it dominates and a secondary answer where it scores equally to another house.</p>
+        
+        <ol>
+        <li>Gryffindor = Praised primarily, trusted secondarily (along with Hufflepuff).</li>
+        <li>Ravenclaw = Imitated primarily, envied secondarily (along with Slytherin).</li>
+        <li>Hufflepuff = Liked primarily, trusted secondarily (along with Gryffindor).</li>
+        <li>Slytherin = Feared primarily, envied secondarily (along with Ravenclaw).</li>
+        </ol>
+        </div>
+        </div></form></div>
+    </body>
+</html>
