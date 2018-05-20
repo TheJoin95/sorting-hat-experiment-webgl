@@ -6,6 +6,7 @@ window.addEventListener("load", function () {
         //var w = window.innerWidth, h = window.innerHeight;
         
         window.renderer = new THREE.WebGLRenderer({alpha: true});
+        renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize(w, h);
         renderer.setClearColor(0x000000, 0);
         var view = document.getElementById("canvas");
@@ -53,6 +54,8 @@ window.addEventListener("load", function () {
             hat.rotation.x = -50 * Math.PI / 180;
             hat.rotation.z = 0;
             hat.rotation.y = 0;
+
+            THREE.AnimationClip.CreateFromMorphTargetSequence( 'facialExpressions', geometry.morphTargets, 3 );
             // change scene position
             // scene.position.x = -200;
             // scene.position.y = 200;
@@ -91,5 +94,15 @@ window.addEventListener("load", function () {
             var file = ev.dataTransfer.files[0];
             openFile(file);
         }, false);
-    }, 1500);
+
+        window.addEventListener('orientationchange', function () {
+            setTimeout(function() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+            
+                renderer.setSize( window.innerWidth, window.innerHeight );
+            }, 200);
+        });
+
+    }, 800);
 }, false);
