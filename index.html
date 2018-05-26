@@ -19,6 +19,7 @@
   <script src="https://threejs.org/build/three.js"></script>
   <script src="https://rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js"
   ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
   <script src="assets/js/stl-loader.js"></script>
   <script src="assets/js/loader.js?v=201805160016"></script>
   <script src="assets/js/stl.js"></script>
@@ -117,8 +118,11 @@
     .house {
       display: none;
       position: absolute;
-      bottom: 10%;
+      background: rgba(51, 51, 51, 0.30);
       width: 100%;
+      height: 100%;
+      top: 0px;
+      padding: 35% 0;
     }
 
     img.social {
@@ -141,6 +145,15 @@
       margin: auto;
       display: block;
     }
+
+    .demo-container {
+      box-sizing: border-box;
+      height: 100%;
+      overflow: hidden;
+      width: 100%;
+    }
+    
+    video { height: 100%;}
 
     video, canvas {
       position: absolute;
@@ -192,6 +205,26 @@
       animation-delay: -0.9s;
     }
 
+    @keyframes zoomInUp {
+      0% {
+        opacity: 0;
+        transform: scale3d(.1,.1,.1) translate3d(0,1000px,0);
+        animation-timing-function: cubic-bezier(.55,.055,.675,.19)
+      }
+
+      60% {
+        opacity: 1;
+        transform: scale3d(.475,.475,.475) translate3d(0,-60px,0);
+        animation-timing-function: cubic-bezier(.175,.885,.32,1)
+      }
+    }
+
+    .zoomInUp {
+      animation-name: zoomInUp;
+      animation-duration: 1s;
+      animation-fill-mode: both
+    }
+
     @-webkit-keyframes sk-cubemove {
       25% { -webkit-transform: translateX(42px) rotate(-90deg) scale(0.5) }
       50% { -webkit-transform: translateX(42px) translateY(42px) rotate(-180deg) }
@@ -232,9 +265,9 @@
   </div>
   <div class="demo-frame">
     <div class="demo-container" id="demo-container" style="overflow:hidden; position: relative; max-width: 100%; max-height: 100%;">
-      <video id="video" width="400" height="300" preload autoplay loop muted></video>
+      <video id="video" preload autoplay loop muted></video>
       <div id="canvas"></div>
-      <canvas id="canvas-track" width="600" height="400"></canvas>
+      <canvas id="canvas-track"></canvas>
       <div class="questions">
         <div id="step-0" class="step">
           <p class="intro">Start the quiz by clicking on the button below</p>
@@ -250,11 +283,13 @@
     </div>
   </div>
   <div class="house">
-    <h2 class="house-name"></h2>
-    <img id="house-img" />
-    <div style="text-align: center;">
-      <a href=""  id="fb-link" target="_blank"><img src="/assets/img/fb.png" class="social"></a>
-      <a href="" id="tw-link" target="_blank"><img src="/assets/img/twitter.png" class="social" style="background: #fff;"></a>
+    <div class="zoomInUp">
+      <h2 class="house-name"></h2>
+      <img id="house-img" />
+      <div style="text-align: center;">
+        <a href=""  id="fb-link" target="_blank"><img src="/assets/img/fb.png" class="social"></a>
+        <a href="" id="tw-link" target="_blank"><img src="/assets/img/twitter.png" class="social" style="background: #fff;"></a>
+      </div>
     </div>
   </div>
 
@@ -294,14 +329,14 @@
         console.log(canvas.height);
       }
       else{
-        video.src = 'assets/video/cap12_edit.webm';
+        video.src = 'assets/video/video.webm';
       }
 
       document.getElementById('demo-container').style.width = window.innerWidth + "px";
       document.getElementById('demo-container').style.height = window.innerHeight + "px";
 
       if(window.location.hash == '#debug')
-        video.src = 'assets/video/cap12_edit.webm';
+        video.src = 'assets/video/video.webm';
     }
 
     function initTracker (isMobile, canvas) {
@@ -312,9 +347,9 @@
       var faceRectData = {};
       
       tracker = new tracking.ObjectTracker('face');
-      tracker.setInitialScale(3);
+      tracker.setInitialScale(5);
       tracker.setStepSize(1);
-      tracker.setEdgesDensity(0.1);
+      tracker.setEdgesDensity(0.15);
       
       if (window.location.hash == '#debug') {
         var gui = new dat.GUI();
@@ -323,7 +358,7 @@
         gui.add(tracker, 'stepSize', 1, 5).step(0.1);
       }
       
-      var faceTrackingTask = tracking.track('#video', tracker, { camera: isMobile , fps: 1});
+      var faceTrackingTask = tracking.track('#video', tracker, { camera: isMobile , fps: 1.3});
       var alertOrientation = false;
 
       setTimeout(function() {
@@ -333,7 +368,7 @@
             console.log(video.videoHeight);
             alertOrientation = true;
             alert("The resolution of your camera works better in landscape mode. Rotate your device, pls.");
-          }
+          }         
 
           if(isFaceRecognized == false){
             context.clearRect(0, 0, canvas.width, canvas.height);
@@ -345,18 +380,48 @@
               if(window.location.hash == '#debug'){
                 context.strokeStyle = '#a64ceb';
                 context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+                context.font = '11px Helvetica';
+                context.fillStyle = "#fff";
+                context.fillText('x: ' + rect.x + 'px, width: ' + rect.width, rect.x + rect.width + 5, rect.y + 11);
+                context.fillText('y: ' + rect.y + 'px, height: ' + rect.height, rect.x + rect.width + 5, rect.y + 22);
               }
                 
               if(window.hat !== null) {
-                window.hat.position.x = rect.x - (window.innerWidth / 2) + (rect.width/2);
-                window.hat.position.y = (alertOrientation) ? ((window.innerHeight / 2) - rect.y  + (rect.height/2)) : ((window.innerHeight / 2) - rect.y);
-              }
+                xHatNewPosition = rect.x - (window.innerWidth / 2) + (rect.width/2);
+                yHatNewPosition = (alertOrientation) ? ((window.innerHeight / 2) - rect.y  + (rect.height/2)) : ((window.innerHeight / 2) - rect.y);
+                
+                xWidth = (video.videoWidth > window.innerWidth) ? window.innerWidth : video.videoWidth;
+                xHeight = (video.videoHeight > window.innerHeight) ? window.innerHeight : video.videoHeight;
+                
+                // Left Limit
+                if(rect.x < 10)
+                  rect.x = rect.width / 4;
+                
+                // Bottom Limit
+                if((rect.y + rect.height) < xHeight * 1.5)
+                  rect.height = rect.height * 2;
+                
+                // Full face at screen Limit
+                if(xHeight - rect.height < 100)
+                  rect.height = rect.height / 2;
+                
+                // Right Limit
+                if(rect.x > xWidth / 3)
+                  rect.width = rect.width / 2;
 
-              if(window.location.hash == '#debug'){
-                context.font = '11px Helvetica';
-                context.fillStyle = "#fff";
-                context.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
-                context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+                xHatNewPosition = (-xWidth/2) + rect.x + rect.width / 2;
+                yHatNewPosition = (xHeight / 2) - rect.y * (xWidth / xHeight) - rect.height / 4;
+
+                //xHatNewPosition *= video.videoWidth / video.videoHeight;
+                //yHatNewPosition *= video.videoWidth / video.videoHeight;
+
+                window.camera.position.z = (rect.width > window.innerWidth / 2 || rect.height > window.innerHeight / 2) ? 350 : 450;
+                window.camera.position.z = (rect.width > window.innerWidth / 4 && rect.height > window.innerHeight / 4) ? 300 : window.camera.position.z;
+                var tweenHat = new TWEEN.Tween(window.hat.position)
+                  .to({ x: xHatNewPosition, y: yHatNewPosition, z: window.hat.position.z }, 200)
+                  .start();
+
+                requestAnimationFrame(animateHatPosition);
               }
             });
           }
@@ -380,6 +445,25 @@
       return check;
     };
 
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener("deviceorientation", function () {
+          console.log(event.beta + " " + event.gamma);
+          // aplha => z
+          // beta => x
+          // gamma y
+          //window.hat.rotation.x = -(event.beta) * Math.PI / 180;
+
+          if((Math.abs(window.hat.position.y * 180 / Math.PI) - Math.abs(event.gamma)) > 5 || (Math.abs(window.hat.position.z * 180 / Math.PI) - Math.abs(event.alpha)) > 5) {
+            //window.hat.rotation.y = (event.gamma) * Math.PI / 180;
+            //window.hat.rotation.x = -(event.beta) * Math.PI / 180;
+            //window.hat.rotation.z = -(event.alpha) * Math.PI / 180;
+          }
+          
+          
+          
+      }, true);
+    }
+
     document.getElementById('start').addEventListener('click', function(e) {
       initQuiz();
     });
@@ -393,6 +477,11 @@
         initTracker(isMobile, canvas);
       }, 200);
     });
+
+    function animateHatPosition(time) {
+      requestAnimationFrame(animateHatPosition);
+      TWEEN.update(time);
+    }
 
     function initQuiz() {
       /*

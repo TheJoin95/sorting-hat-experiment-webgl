@@ -2,8 +2,8 @@ window.addEventListener("load", function () {
     "use strict";
     
     setTimeout(function(){
-        var w = document.getElementById('video').width, h = document.getElementById('video').height;
-        //var w = window.innerWidth, h = window.innerHeight;
+        //var w = document.getElementById('video').videoWidth, h = document.getElementById('video').videoHeight;
+        var w = window.innerWidth, h = window.innerHeight;
         
         window.renderer = new THREE.WebGLRenderer({alpha: true});
         renderer.setPixelRatio( window.devicePixelRatio );
@@ -54,6 +54,8 @@ window.addEventListener("load", function () {
             hat.rotation.x = -50 * Math.PI / 180;
             hat.rotation.z = 0;
             hat.rotation.y = 0;
+
+            hat.position.x = 1000;
 
             THREE.AnimationClip.CreateFromMorphTargetSequence( 'facialExpressions', geometry.morphTargets, 3 );
             // change scene position
