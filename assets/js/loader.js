@@ -2,8 +2,8 @@ window.addEventListener("load", function () {
     "use strict";
     
     setTimeout(function(){
-        var w = document.getElementById('video').videoWidth, h = document.getElementById('video').videoHeight;
-        //var w = window.innerWidth, h = window.innerHeight;
+        //var w = document.getElementById('video').videoWidth, h = document.getElementById('video').videoHeight;
+        var w = window.innerWidth, h = window.innerHeight;
         
         window.renderer = new THREE.WebGLRenderer({alpha: true});
         renderer.setPixelRatio( window.devicePixelRatio );

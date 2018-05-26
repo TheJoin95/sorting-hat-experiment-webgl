@@ -329,7 +329,8 @@
         console.log(canvas.height);
       }
       else{
-        video.src = 'assets/video/video.webm';
+        //video.src = 'assets/video/video.webm';
+        alert("Visit this on mobile, pls");
       }
 
       document.getElementById('demo-container').style.width = window.innerWidth + "px";
@@ -392,6 +393,9 @@
                 
                 xWidth = (video.videoWidth > window.innerWidth) ? window.innerWidth : video.videoWidth;
                 xHeight = (video.videoHeight > window.innerHeight) ? window.innerHeight : video.videoHeight;
+
+                window.camera.position.z = (rect.width > window.innerWidth / 2 || rect.height > window.innerHeight / 2) ? 350 : 420;
+                window.camera.position.z = (rect.width > window.innerWidth / 4 && rect.height > window.innerHeight / 4) ? 300 : window.camera.position.z;
                 
                 // Left Limit
                 if(rect.x < 10)
@@ -415,8 +419,6 @@
                 //xHatNewPosition *= video.videoWidth / video.videoHeight;
                 //yHatNewPosition *= video.videoWidth / video.videoHeight;
 
-                window.camera.position.z = (rect.width > window.innerWidth / 2 || rect.height > window.innerHeight / 2) ? 350 : 450;
-                window.camera.position.z = (rect.width > window.innerWidth / 4 && rect.height > window.innerHeight / 4) ? 300 : window.camera.position.z;
                 var tweenHat = new TWEEN.Tween(window.hat.position)
                   .to({ x: xHatNewPosition, y: yHatNewPosition, z: window.hat.position.z }, 200)
                   .start();
