@@ -2,9 +2,12 @@ window.addEventListener("load", function () {
     "use strict";
     
     setTimeout(function(){
-        //var w = document.getElementById('video').videoWidth, h = document.getElementById('video').videoHeight;
-        var w = window.innerWidth, h = window.innerHeight;
-        
+        if(screen.width > 997) {
+            var w = document.getElementById('video').width, h = document.getElementById('video').height;
+        }else{
+            var w = window.innerWidth, h = window.innerHeight;
+        }
+                
         window.renderer = new THREE.WebGLRenderer({alpha: true});
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize(w, h);

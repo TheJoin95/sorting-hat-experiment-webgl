@@ -1,5 +1,5 @@
 <!doctype html>
-<html style="overflow: hidden; height: 0">
+<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -116,13 +116,13 @@
     }
     
     .house {
-      display: none;
-      position: absolute;
+      display: none;    
+      position: fixed;
       background: rgba(51, 51, 51, 0.30);
       width: 100%;
       height: 100%;
       top: 0px;
-      padding: 35% 0;
+      padding: 18% 0;
     }
 
     img.social {
@@ -172,8 +172,6 @@
       overflow: hidden;
       width: 100%;
     }
-    
-    video { height: 100%;}
 
     video, canvas {
       position: absolute;
@@ -284,10 +282,10 @@
     <div class="cube2"></div>
   </div>
   <div class="demo-frame">
-    <div class="demo-container" id="demo-container" style="overflow:hidden; position: relative; max-width: 100%; max-height: 100%;">
+    <div class="demo-container" id="demo-container" style="overflow:hidden; max-width: 100%; max-height: 100%; height:400px; width: 600px; position: relative;">
       <video id="video" preload autoplay loop muted></video>
       <div id="canvas"></div>
-      <canvas id="canvas-track"></canvas>
+      <canvas width="600" height="400" id="canvas-track"></canvas>
       <div class="questions">
         <div id="step-0" class="step">
           <p class="intro">Start the quiz by clicking on the button below</p>
@@ -319,15 +317,13 @@
     window.onload = function() {
       video = document.getElementById('video');
       canvas = document.getElementById('canvas-track');
-      isMobile = window.mobilecheck();
-      
-      console.log(isMobile);
-      
+      isMobile = false;
+
       loadJSON(function(response) {
         quizJSON = JSON.parse(response);
       });
-      initVideoSize(isMobile, video);
-      initTracker(isMobile, canvas);
+      initVideoSize(false, video);
+      initTracker(false, canvas);
 
       // var gui = new dat.GUI();
       // gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
@@ -341,28 +337,13 @@
     }
 
     function initVideoSize(isMobile, video) {
-      if(isMobile) {
-        canvas.width = video.width = window.innerWidth; //document.width is obsolete
-        canvas.height = video.height = window.innerHeight; //document.height is obsolete
-      
-        console.log(canvas.width);
-        console.log(canvas.height);
-      }
-      else{
-        //video.src = 'assets/video/video.webm';
-        alert("Visit this on mobile, pls");
-        window.location.href = "/desktop.html";
-      }
-
-      document.getElementById('demo-container').style.width = window.innerWidth + "px";
-      document.getElementById('demo-container').style.height = window.innerHeight + "px";
-
       if(window.location.hash == '#debug')
-        video.src = 'assets/video/video.webm';
+        //video.src = 'assets/video/video.webm';
+        video.src = 'assets/video/cap12_edit.webm';
     }
 
     function initTracker (isMobile, canvas) {
-      var isMobile = isMobile || true;
+      var isMobile = isMobile || false;
       var context = canvas.getContext('2d');
       var isFaceRecognized = false;
       var recognizeAttemps = 0;
@@ -385,12 +366,18 @@
 
       setTimeout(function() {
         tracker.on('track', function(event) {
+          console.log(event);
           if(video.videoWidth > video.videoHeight && alertOrientation == false && window.innerWidth < window.innerHeight) {
             console.log(video.videoWidth);
             console.log(video.videoHeight);
             alertOrientation = true;
             alert("The resolution of your camera works better in landscape mode. Rotate your device, pls.");
           }         
+
+          /* da fare solo una volta, e non qui */
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          renderer.setSize(video.videoWidth, video.videoHeight);
 
           if(isFaceRecognized == false){
             context.clearRect(0, 0, canvas.width, canvas.height);
@@ -409,14 +396,14 @@
               }
                 
               if(window.hat !== null) {
-                xHatNewPosition = rect.x - (window.innerWidth / 2) + (rect.width/2);
-                yHatNewPosition = (alertOrientation) ? ((window.innerHeight / 2) - rect.y  + (rect.height/2)) : ((window.innerHeight / 2) - rect.y);
+                xHatNewPosition = rect.x - (video.width / 2) + (rect.width/2);
+                yHatNewPosition = (alertOrientation) ? ((video.height / 2) - rect.y  + (rect.height/2)) : ((video.width / 2) - rect.y);
                 
-                xWidth = (video.videoWidth > window.innerWidth) ? window.innerWidth : video.videoWidth;
-                xHeight = (video.videoHeight > window.innerHeight) ? window.innerHeight : video.videoHeight;
+                xWidth = (video.videoWidth > video.width) ? video.width : video.videoWidth;
+                xHeight = (video.videoHeight > video.height) ? video.height : video.videoHeight;
 
-                window.camera.position.z = (rect.width > window.innerWidth / 2 || rect.height > window.innerHeight / 2) ? 350 : 420;
-                window.camera.position.z = (rect.width > window.innerWidth / 4 && rect.height > window.innerHeight / 4) ? 300 : window.camera.position.z;
+                window.camera.position.z = (rect.width > video.width / 2 || rect.height > video.height / 2) ? 350 : 420;
+                window.camera.position.z = (rect.width > video.width / 4 && rect.height > video.height / 4) ? 300 : window.camera.position.z;
                 
                 // Left Limit
                 if(rect.x < 10)
