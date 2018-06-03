@@ -5,7 +5,7 @@ This experiment want to provide the Pottermore Quiz in an other level. Just for 
 A lot of love to this guy right [here](https://www.thingiverse.com/thing:501495) who made the STL file of the Sorting Hat. Crazy man.
 
 ## TODO
-- Add credits
+- ~~Add credits~~
 - Remove Global Variables [bleah]
 - Review code
 - Add video animations
