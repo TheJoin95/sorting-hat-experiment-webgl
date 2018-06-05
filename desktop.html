@@ -363,6 +363,7 @@
       
       var faceTrackingTask = tracking.track('#video', tracker, { camera: isMobile , fps: 1.3});
       var alertOrientation = false;
+      var setSize = true;
 
       setTimeout(function() {
         tracker.on('track', function(event) {
@@ -375,9 +376,14 @@
           }         
 
           /* da fare solo una volta, e non qui */
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          renderer.setSize(video.videoWidth, video.videoHeight);
+          if(setSize == true) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            renderer.setSize(video.videoWidth, video.videoHeight);
+            camera.aspect = video.videoWidth / video.videoHeight;
+            camera.updateProjectionMatrix();
+            setSize = false;
+          }
 
           if(isFaceRecognized == false){
             context.clearRect(0, 0, canvas.width, canvas.height);
@@ -399,11 +405,11 @@
                 xHatNewPosition = rect.x - (video.width / 2) + (rect.width/2);
                 yHatNewPosition = (alertOrientation) ? ((video.height / 2) - rect.y  + (rect.height/2)) : ((video.width / 2) - rect.y);
                 
-                xWidth = (video.videoWidth > video.width) ? video.width : video.videoWidth;
-                xHeight = (video.videoHeight > video.height) ? video.height : video.videoHeight;
+                xWidth = (video.videoWidth > video.offsetWidth && video.offsetWidth > 0) ? video.offsetWidth : video.videoWidth;
+                xHeight = (video.videoHeight > video.offsetHeight && video.offsetHeight > 0) ? video.offsetHeight : video.videoHeight;
 
-                window.camera.position.z = (rect.width > video.width / 2 || rect.height > video.height / 2) ? 350 : 420;
-                window.camera.position.z = (rect.width > video.width / 4 && rect.height > video.height / 4) ? 300 : window.camera.position.z;
+                window.camera.position.z = (rect.width > video.offsetWidth / 2 || rect.height > video.offsetHeight / 2) ? 350 : 420;
+                window.camera.position.z = (rect.width > video.offsetWidth / 4 && rect.height > video.offsetHeight / 4) ? 300 : window.camera.position.z;
                 
                 // Left Limit
                 if(rect.x < 10)
@@ -420,9 +426,9 @@
                 // Right Limit
                 if(rect.x > xWidth / 3)
                   rect.width = rect.width / 2;
-
-                xHatNewPosition = (-xWidth/2) + rect.x + rect.width / 2;
-                yHatNewPosition = (xHeight / 2) - rect.y * (xWidth / xHeight) - rect.height / 4;
+                
+                xHatNewPosition = -(xWidth/2) + rect.x + (rect.width / 2) + 30;
+                yHatNewPosition = (xHeight / 2 + 40) - rect.y;
 
                 //xHatNewPosition *= video.videoWidth / video.videoHeight;
                 //yHatNewPosition *= video.videoWidth / video.videoHeight;
