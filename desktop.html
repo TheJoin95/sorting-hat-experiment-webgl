@@ -13,6 +13,7 @@
   <meta property="og:image" content="https://experiments.thejoin.it/assets/img/houses.png" />
 
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <link href="assets/css/bulma.min.css" rel="stylesheet">
   <script src="node_modules/tracking/build/tracking-min.js"></script>
   <script src="node_modules/tracking/build/data/face-min.js"></script>
   <script src="node_modules/dat.gui/build/dat.gui.min.js"></script>
@@ -281,35 +282,65 @@
     <div class="cube1"></div>
     <div class="cube2"></div>
   </div>
-  <div class="demo-frame">
-    <div class="demo-container" id="demo-container" style="overflow:hidden; max-width: 100%; max-height: 100%; height:400px; width: 600px; position: relative;">
-      <video id="video" preload autoplay loop muted></video>
-      <div id="canvas"></div>
-      <canvas width="600" height="400" id="canvas-track"></canvas>
-      <div class="questions">
-        <div id="step-0" class="step">
-          <p class="intro">Start the quiz by clicking on the button below</p>
-          <button id="start">START</button>
+  <div class="container">
+    <nav class="level">
+      <p class="level-item has-text-centered">
+        <a class="link is-info">Home</a>
+      </p>
+      <p class="level-item has-text-centered">
+        <a class="link is-info">Menu</a>
+      </p>
+      <p class="level-item has-text-centered">
+        <h3 class="title is-3">The Sorting Hat</h3>
+      </p>
+      <p class="level-item has-text-centered">
+        <a class="link is-info">Reservations</a>
+      </p>
+      <p class="level-item has-text-centered">
+        <a class="link is-info">Contact</a>
+      </p>
+    </nav>
+    <div class="demo-frame">
+      <div class="demo-container" id="demo-container" style="overflow:hidden; max-width: 100%; max-height: 100%; height:400px; width: 600px; position: relative;">
+        <video id="video" preload autoplay loop muted></video>
+        <div id="canvas"></div>
+        <canvas width="600" height="400" id="canvas-track"></canvas>
+        <div class="questions">
+          <div id="step-0" class="step">
+            <p class="intro">Start the quiz by clicking on the button below</p>
+            <button id="start">START</button>
+          </div>
+          <div id="step" style="display: none" class="step" data-step-num="0">
+            <p class="question" data-question-id="0"></p>
+            <button data-answer-id="0" class="answer"></button>
+            <span class="prev">&lt;</span>
+            <span class="next">&gt;</span>
+          </div>
         </div>
-        <div id="step" style="display: none" class="step" data-step-num="0">
-          <p class="question" data-question-id="0"></p>
-          <button data-answer-id="0" class="answer"></button>
-          <span class="prev">&lt;</span>
-          <span class="next">&gt;</span>
+      </div>
+    </div>
+    <div class="house">
+      <div class="zoomInUp">
+        <h2 class="house-name"></h2>
+        <img id="house-img" />
+        <div style="text-align: center;">
+          <a href=""  id="fb-link" target="_blank"><img src="/assets/img/fb.png" class="social"></a>
+          <a href="" id="tw-link" target="_blank"><img src="/assets/img/twitter.png" class="social" style="background: #fff;"></a>
         </div>
       </div>
     </div>
   </div>
-  <div class="house">
-    <div class="zoomInUp">
-      <h2 class="house-name"></h2>
-      <img id="house-img" />
-      <div style="text-align: center;">
-        <a href=""  id="fb-link" target="_blank"><img src="/assets/img/fb.png" class="social"></a>
-        <a href="" id="tw-link" target="_blank"><img src="/assets/img/twitter.png" class="social" style="background: #fff;"></a>
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
+          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+          is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+        </p>
       </div>
     </div>
-  </div>
+  </footer>
 
   <script>
     var isMobile, canvas, video, tracker, quizJSON, quizData = null;
