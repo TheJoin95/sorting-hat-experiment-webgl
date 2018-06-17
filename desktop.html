@@ -117,7 +117,7 @@
     }
     
     .house {
-      display: none;    
+      display: none !important;    
       position: fixed;
       background: rgba(51, 51, 51, 0.30);
       width: 100%;
@@ -283,25 +283,54 @@
     <div class="cube2"></div>
   </div>
   <div class="container">
-    <nav class="level">
-      <p class="level-item has-text-centered">
-        <a class="link is-info">Home</a>
-      </p>
-      <p class="level-item has-text-centered">
-        <a class="link is-info">Menu</a>
-      </p>
-      <p class="level-item has-text-centered">
-        <h3 class="title is-3">The Sorting Hat</h3>
-      </p>
-      <p class="level-item has-text-centered">
-        <a class="link is-info">Reservations</a>
-      </p>
-      <p class="level-item has-text-centered">
-        <a class="link is-info">Contact</a>
-      </p>
-    </nav>
-    <div class="demo-frame">
-      <div class="demo-container" id="demo-container" style="overflow:hidden; max-width: 100%; max-height: 100%; height:400px; width: 600px; position: relative;">
+    <div class="navbar-brand animated pulse">
+      <a class="navbar-item" href="#">
+        <!-- <img src="" /> -->
+        The Sorting Hat
+      </a>
+      <span class="navbar-burger burger animated pulse" data-target="navbarMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item button is-primary" href="#try" data-anchor="try">
+          Try now
+        </a>
+        <a class="navbar-item" href="#what-is-it" data-anchor="what-is-it">
+          What is it
+        </a>
+        <a class="navbar-item" href="#how-it-works" data-anchor="how-it-works">
+          How It Works
+        </a>
+        <a class="navbar-item" href="#credits" data-anchor="credits">
+          Credits
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <section class="hero is-light is-fullheight is-bold">
+    <div class="hero-body animated pulse">
+      <div class="container has-text-centered">
+        <h1 class="title">
+          <figure class="image">
+            <!-- LOGO -->
+            The Sorting Hat Quiz
+          </figure>
+          <span style="display: none">a VR-AR Experience</span>
+        </h1>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="container" id="try">
+    <div class="demo-frame columns">
+      <div class="column"></div>
+      <div class="is-two-thirds column demo-container" id="demo-container" style="overflow:hidden; max-width: 100%; max-height: 100%; height:400px; width: 600px; position: relative;">
         <video id="video" preload autoplay loop muted></video>
         <div id="canvas"></div>
         <canvas width="600" height="400" id="canvas-track"></canvas>
@@ -318,9 +347,11 @@
           </div>
         </div>
       </div>
+      <div class="column"></div>
     </div>
-    <div class="house">
-      <div class="zoomInUp">
+    <div class="house columns">
+      <div class="column"></div>
+      <div class="is-two-thirds zoomInUp">
         <h2 class="house-name"></h2>
         <img id="house-img" />
         <div style="text-align: center;">
@@ -328,8 +359,55 @@
           <a href="" id="tw-link" target="_blank"><img src="/assets/img/twitter.png" class="social" style="background: #fff;"></a>
         </div>
       </div>
+      <div class="column"></div>
     </div>
   </div>
+  
+  <section id="what-is-it" name="what-is-it" class="hero is-light is-fullheight is-bold">
+    <div class="hero-body animated pulse">
+      <div class="container has-text-centered">
+        <h1 class="title">
+          <figure class="image">
+            <!-- LOGO -->
+            What is it?
+          </figure>
+          <span style="display: none">a VR-AR Experience</span>
+        </h1>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="how-it-works" name="how-it-works" class="hero is-light is-fullheight is-bold">
+    <div class="hero-body animated pulse">
+      <div class="container has-text-centered">
+        <h1 class="title">
+          <figure class="image">
+            <!-- LOGO -->
+            How it works?
+          </figure>
+          <span style="display: none">a VR-AR Experience</span>
+        </h1>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="credits" name="credits" class="hero is-light is-fullheight is-bold">
+    <div class="hero-body animated pulse">
+      <div class="container has-text-centered">
+        <h1 class="title">
+          <figure class="image">
+            <!-- LOGO -->
+            Credits
+          </figure>
+          <span style="display: none">a VR-AR Experience</span>
+        </h1>
+      </div>
+    </div>
+
+  </section>
+
   <footer class="footer">
     <div class="container">
       <div class="content has-text-centered">
