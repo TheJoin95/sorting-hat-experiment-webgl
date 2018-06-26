@@ -44,7 +44,7 @@
       left: 0;
       bottom: 0;
       width: 100%;
-      margin: auto -10px;
+      margin: auto 0px;
       padding: 10px 10px;
       /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3b8fef+30,02528e+100&0+16,0.25+37,0.65+100 */
       background: -moz-linear-gradient(top, rgba(59,143,239,0) 8%, rgba(59,143,239,0.17) 21%, rgba(53,137,229,0.25) 37%, rgba(2,82,142,0.65) 100%); /* FF3.6-15 */
@@ -320,6 +320,9 @@
             <!-- LOGO -->
             The Sorting Hat Quiz
           </figure>
+          <p class="has-text-centered is-size-5 is-size-6-mobile">
+            testo
+          </p>
           <span style="display: none">a VR-AR Experience</span>
         </h1>
       </div>
@@ -371,6 +374,9 @@
             <!-- LOGO -->
             What is it?
           </figure>
+          <p class="has-text-centered is-size-5 is-size-6-mobile">
+            testo
+          </p>
           <span style="display: none">a VR-AR Experience</span>
         </h1>
       </div>
@@ -386,6 +392,9 @@
             <!-- LOGO -->
             How it works?
           </figure>
+          <p class="has-text-centered is-size-5 is-size-6-mobile">
+            testo
+          </p>
           <span style="display: none">a VR-AR Experience</span>
         </h1>
       </div>
@@ -401,6 +410,9 @@
             <!-- LOGO -->
             Credits
           </figure>
+          <p class="has-text-centered is-size-5 is-size-6-mobile">
+            testo
+          </p>
           <span style="display: none">a VR-AR Experience</span>
         </h1>
       </div>
@@ -452,7 +464,7 @@
     }
 
     function initTracker (isMobile, canvas) {
-      var isMobile = isMobile || false;
+      var isMobile = false;
       var context = canvas.getContext('2d');
       var isFaceRecognized = false;
       var recognizeAttemps = 0;
@@ -470,7 +482,7 @@
         gui.add(tracker, 'stepSize', 1, 5).step(0.1);
       }
       
-      var faceTrackingTask = tracking.track('#video', tracker, { camera: isMobile , fps: 1.3});
+      var faceTrackingTask = tracking.track('#video', tracker, { camera: true , fps: 1.3});
       var alertOrientation = false;
       var setSize = true;
 
@@ -486,13 +498,24 @@
 
           /* da fare solo una volta, e non qui */
           if(setSize == true) {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            // canvas.width = video.videoWidth;
+            // canvas.height = video.videoHeight;
+            canvas.width = video.offsetWidth;
+            canvas.height = video.offsetHeight;
             renderer.setSize(video.videoWidth, video.videoHeight);
             camera.aspect = video.videoWidth / video.videoHeight;
             camera.updateProjectionMatrix();
             setSize = false;
           }
+          /* da fare solo una volta, e non qui */
+          // if(setSize == true) {
+          //   canvas.width = video.videoWidth;
+          //   canvas.height = video.videoHeight;
+          //   renderer.setSize(video.videoWidth, video.videoHeight);
+          //   camera.aspect = video.videoWidth / video.videoHeight;
+          //   camera.updateProjectionMatrix();
+          //   setSize = false;
+          // }
 
           if(isFaceRecognized == false){
             context.clearRect(0, 0, canvas.width, canvas.height);
@@ -517,8 +540,8 @@
                 xWidth = (video.videoWidth > video.offsetWidth && video.offsetWidth > 0) ? video.offsetWidth : video.videoWidth;
                 xHeight = (video.videoHeight > video.offsetHeight && video.offsetHeight > 0) ? video.offsetHeight : video.videoHeight;
 
-                window.camera.position.z = (rect.width > video.offsetWidth / 2 || rect.height > video.offsetHeight / 2) ? 350 : 420;
-                window.camera.position.z = (rect.width > video.offsetWidth / 4 && rect.height > video.offsetHeight / 4) ? 300 : window.camera.position.z;
+                window.camera.position.z = (rect.width > video.offsetWidth / 2 || rect.height > video.offsetHeight / 2) ? 250 : 320;
+                window.camera.position.z = (rect.width > video.offsetWidth / 4 && rect.height > video.offsetHeight / 4) ? 200 : window.camera.position.z;
                 
                 // Left Limit
                 if(rect.x < 10)
