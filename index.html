@@ -11,6 +11,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://experiments.thejoin.it" />
   <meta property="og:image" content="https://experiments.thejoin.it/assets/img/houses.png" />
+  <meta name="author" content="thejoin95" />
 
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   <script src="node_modules/tracking/build/tracking-min.js"></script>
@@ -50,6 +51,11 @@
       background: -webkit-linear-gradient(top, rgba(59,143,239,0) 8%,rgba(59,143,239,0.17) 21%,rgba(53,137,229,0.25) 37%,rgba(2,82,142,0.65) 100%); /* Chrome10-25,Safari5.1-6 */
       background: linear-gradient(to bottom, rgba(59,143,239,0) 8%,rgba(59,143,239,0.17) 21%,rgba(53,137,229,0.25) 37%,rgba(2,82,142,0.65) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#003b8fef', endColorstr='#a602528e',GradientType=0 ); /* IE6-9 */
+    }
+
+    video {
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
     }
 
     .step {
@@ -369,7 +375,7 @@
       var faceRectData = {};
       
       tracker = new tracking.ObjectTracker('face');
-      tracker.setInitialScale(5);
+      tracker.setInitialScale(1.2);
       tracker.setStepSize(1);
       tracker.setEdgesDensity(0.15);
       
@@ -382,6 +388,9 @@
       
       var faceTrackingTask = tracking.track('#video', tracker, { camera: isMobile , fps: 1.3});
       var alertOrientation = false;
+
+      context.translate(canvas.width, 0);
+      context.scale(-1, 1);
 
       setTimeout(function() {
         tracker.on('track', function(event) {
@@ -415,8 +424,8 @@
                 xWidth = (video.videoWidth > window.innerWidth) ? window.innerWidth : video.videoWidth;
                 xHeight = (video.videoHeight > window.innerHeight) ? window.innerHeight : video.videoHeight;
 
-                window.camera.position.z = (rect.width > window.innerWidth / 2 || rect.height > window.innerHeight / 2) ? 350 : 420;
                 window.camera.position.z = (rect.width > window.innerWidth / 4 && rect.height > window.innerHeight / 4) ? 300 : window.camera.position.z;
+                window.camera.position.z = (rect.width > window.innerWidth / 2 || rect.height > window.innerHeight / 2) ? 350 : 420;
                 
                 // Left Limit
                 if(rect.x < 10)
@@ -434,8 +443,11 @@
                 if(rect.x > xWidth / 3)
                   rect.width = rect.width / 2;
 
-                xHatNewPosition = (-xWidth/2) + rect.x + rect.width / 2;
-                yHatNewPosition = (xHeight / 2) - rect.y * (xWidth / xHeight) - rect.height / 4;
+                //xHatNewPosition = (-xWidth/2) + rect.x + rect.width / 2;
+                //yHatNewPosition = (xHeight / 2) - rect.y * (xWidth / xHeight) - rect.height / 4;
+
+                xHatNewPosition = -(-(xWidth*0.4) + rect.x);
+                yHatNewPosition = (xHeight * 0.65) - rect.y;
 
                 //xHatNewPosition *= video.videoWidth / video.videoHeight;
                 //yHatNewPosition *= video.videoWidth / video.videoHeight;

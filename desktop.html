@@ -11,6 +11,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://experiments.thejoin.it" />
   <meta property="og:image" content="https://experiments.thejoin.it/assets/img/houses.png" />
+  <meta name="author" content="thejoin95" />
 
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   <link href="assets/css/bulma.min.css" rel="stylesheet">
@@ -42,7 +43,7 @@
     .questions {
       position: absolute;
       left: 0;
-      bottom: 0;
+      bottom: 60px;
       width: 100%;
       margin: auto 0px;
       padding: 10px 10px;
@@ -55,6 +56,11 @@
 
     .step {
       position: relative;
+    }
+
+    video {
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
     }
 
     .step .intro {
@@ -240,12 +246,34 @@
     }
 
     section.is-light.hero:nth-of-type(4) {
-      background-image: url('/assets/img/sorting-hat-background.jpg');
+      background-image: url('/assets/img/biblio.jpg');
       background-size: cover;
     }
 
     #try {
       padding-bottom: 80px;
+      background: url(/assets/img/sorting-hat-background.jpg);
+      background-size: cover;
+    }
+
+    #subtitle-logo {
+      font-size: 2em;
+      text-transform: uppercase;
+      word-break: break-word;
+      width: 200px;
+      vertical-align: super;
+      display: inline-block;
+      line-height: 26px;
+      font-family: 'Lato';
+      color: #a57450;
+    }
+
+    a.navbar-item {
+      font-size: 20px;
+    }
+
+    .has-text-centered figure, .has-text-centered{
+      color: #fff;
     }
 
     @keyframes zoomInUp {
@@ -307,60 +335,58 @@
     <div class="cube2"></div>
   </div>
   <div class="container">
-    <div class="navbar-brand animated pulse">
-      <a class="navbar-item" href="#">
-        <!-- <img src="" /> -->
-        The Sorting Hat
-      </a>
-      <span class="navbar-burger burger animated pulse" data-target="navbarMenu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-    </div>
-    <div id="navbarMenu" class="navbar-menu">
-      <div class="navbar-end">
-        <a class="navbar-item button is-primary" href="#try" data-anchor="try">
-          Try now
+    <div class="navbar">
+      <div class="navbar-brand animated pulse">
+        <a href="/desktop.html">
+          <img src="/assets/img/favicon.ico" style="max-height: 90px" title="The Sorting Hat Quiz" alt="The Sorting Hat Quiz" />
+          <span id="subtitle-logo">The Sorting Hat Quiz</span>
         </a>
-        <a class="navbar-item" href="#what-is-it" data-anchor="what-is-it">
-          What is it
-        </a>
-        <a class="navbar-item" href="#how-it-works" data-anchor="how-it-works">
-          How It Works
-        </a>
-        <a class="navbar-item" href="#credits" data-anchor="credits">
-          Credits
-        </a>
+        <span class="navbar-burger burger animated pulse" data-target="navbarMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </div>
+      <div id="navbarMenu" class="navbar-menu">
+        <div class="navbar-end">
+          <a class="navbar-item" href="#try" data-anchor="try">
+            Try now
+          </a>
+          <a class="navbar-item" href="#what-is-it" data-anchor="what-is-it">
+            What is it
+          </a>
+          <a class="navbar-item" href="#how-it-works" data-anchor="how-it-works">
+            How It Works
+          </a>
+          <a class="navbar-item" href="#credits" data-anchor="credits">
+            Credits
+          </a>
+        </div>
       </div>
     </div>
   </div>
   
   <section class="hero is-light is-fullheight is-bold">
-    <div class="hero-body animated pulse">
+    <div class="hero-body animated pulse" style="background: rgba(73, 63, 52, 0.38);">
       <div class="container has-text-centered">
-        <h1 class="title">
-          <figure class="image">
-            <!-- LOGO -->
+        <h1 class="title has-text-white" style="font-size: 3em;margin-bottom: 10px">
             The Sorting Hat Quiz
-          </figure>
-          <p class="has-text-centered is-size-5 is-size-6-mobile">
-            testo
-          </p>
-          <span style="display: none">a VR-AR Experience</span>
         </h1>
+        <p class="has-text-centered is-size-3 is-size-6-mobile">
+          The Pottermore Sorting Hat Quiz take to the next level
+        </p>
+        <span style="display: none">a VR-AR Experience</span>
       </div>
     </div>
 
   </section>
 
-  <div class="hero is-light is-bold" id="try">
-    <div class="demo-frame columns">
-      <div class="column"></div>
-      <div class="is-two-thirds column demo-container" id="demo-container" style="overflow:hidden; max-width: 100%; max-height: 100%; height:400px; width: 600px; position: relative;">
+  <div class="hero is-light is-bold is-fullheight" id="try">
+    <div class="demo-frame columns is-centered" style="margin: auto">
+      <div class="is-two-thirds column demo-container" id="demo-container" style="overflow:hidden; max-width: 100%; max-height: 100%; height:450px; width: 700px; position: relative;">
         <video id="video" preload autoplay loop muted></video>
         <div id="canvas"></div>
-        <canvas width="600" height="400" id="canvas-track"></canvas>
+        <canvas width="700" height="450" id="canvas-track"></canvas>
         <div class="questions">
           <div id="step-0" class="step">
             <p class="intro">Start the quiz by clicking on the button below</p>
@@ -374,10 +400,11 @@
           </div>
         </div>
       </div>
-      <div class="column"></div>
     </div>
     <div class="house columns">
-      <div class="column"></div>
+      <div class="column">
+        <span onclick="this.parentNode.parentNode.style.display = 'none';" style="pointer: cursor;position: absolute;right: 10px;top: 10px;color: #fff;font-size: 3em;">x</span>
+      </div>
       <div class="is-two-thirds zoomInUp">
         <h2 class="house-name"></h2>
         <img id="house-img" />
@@ -393,34 +420,25 @@
   <section id="what-is-it" name="what-is-it" class="hero is-light is-fullheight is-bold">
     <div class="hero-body animated pulse">
       <div class="container has-text-centered">
-        <h1 class="title">
-          <figure class="image">
-            <!-- LOGO -->
-            What is it?
-          </figure>
-          <p class="has-text-centered is-size-5 is-size-6-mobile">
-            testo
-          </p>
-          <span style="display: none">a VR-AR Experience</span>
-        </h1>
+        <h2 class="title is-size-1 has-text-white">What is it?</h2>
+        <p class="is-size-4">
+          The Sorting Hat is one of the cleverest enchanted objects most witches and wizards will ever meet.<br/>It literally contains the intelligence of the four founders, can speak (through a rip near its brim) and is skilled at Legilimency,<br/>which enables it to look into the wearer’s head and divine his or her capabilities or mood. It can even respond to the thoughts of the wearer.
+        </p>
       </div>
     </div>
 
   </section>
     
   <section id="how-it-works" name="how-it-works" class="hero is-light is-fullheight is-bold">
-    <div class="hero-body animated pulse">
+    <div class="hero-body animated pulse" style="background: rgba(40, 40, 52, 0.38);">
       <div class="container has-text-centered">
-        <h1 class="title">
-          <figure class="image">
-            <!-- LOGO -->
-            How it works?
-          </figure>
-          <p class="has-text-centered is-size-5 is-size-6-mobile">
-            testo
-          </p>
-          <span style="display: none">a VR-AR Experience</span>
-        </h1>
+        <h2 class="title is-size-1 has-text-white">How it works?</h2>
+        <p class="is-size-4">
+          It works thanks to Three.js and Tracking.js: the first JS library was used to interface with the Sorting Hat STL using the WebGL.<br/>
+          The second one is a lightweight face tracking library.<br/>
+          The union of these two libraries can make this little experiment.<br/>
+          As you can see it is not accurate, but it can be improved with simple correction or with multi-device testing.
+        </p>
       </div>
     </div>
 
@@ -435,7 +453,7 @@
             Credits
           </figure>
           <p class="has-text-centered is-size-5 is-size-6-mobile">
-            testo
+            A lot of love to this <a class="has-text-info " href="https://www.thingiverse.com/thing:501495" target="_blank">guy right here</a><br/>who made the STL file of the Sorting Hat. Crazy man.
           </p>
           <span style="display: none">a VR-AR Experience</span>
         </h1>
@@ -446,13 +464,11 @@
 
   <footer class="footer">
     <div class="container">
-      <div class="content has-text-centered">
-        <p>
-          <strong>The Sorting Hat Quiz</strong> by <a href="https://github.com/thejoin95">Miki Lombardi</a>. The source code is licensed
-          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
-          is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
-        </p>
-      </div>
+      <center class="content">
+          <p><strong>The Sorting Hat Quiz</strong> by <a href="https://github.com/thejoin95">Miki Lombardi</a>.<br/>The source code is licensed
+          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.<br/>The website content
+          is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.</p>
+      </center>
     </div>
   </footer>
 
@@ -495,7 +511,7 @@
       var faceRectData = {};
       
       tracker = new tracking.ObjectTracker('face');
-      tracker.setInitialScale(5);
+      tracker.setInitialScale(1.2);
       tracker.setStepSize(1);
       tracker.setEdgesDensity(0.15);
       
@@ -510,7 +526,7 @@
       var alertOrientation = false;
       var setSize = true;
 
-      setTimeout(function() {
+      window.sceneTimeout = setTimeout(function() {
         tracker.on('track', function(event) {
           console.log(event);
           if(video.videoWidth > video.videoHeight && alertOrientation == false && window.innerWidth < window.innerHeight) {
@@ -520,7 +536,6 @@
             alert("The resolution of your camera works better in landscape mode. Rotate your device, pls.");
           }         
 
-          /* da fare solo una volta, e non qui */
           if(setSize == true) {
             // canvas.width = video.videoWidth;
             // canvas.height = video.videoHeight;
@@ -530,7 +545,10 @@
             camera.aspect = video.videoWidth / video.videoHeight;
             camera.updateProjectionMatrix();
             setSize = false;
+            context.translate(canvas.width, 0);
+            context.scale(-1, 1);
           }
+
           /* da fare solo una volta, e non qui */
           // if(setSize == true) {
           //   canvas.width = video.videoWidth;
@@ -558,8 +576,8 @@
               }
                 
               if(window.hat !== null) {
-                xHatNewPosition = rect.x - (video.width / 2) + (rect.width/2);
-                yHatNewPosition = (alertOrientation) ? ((video.height / 2) - rect.y  + (rect.height/2)) : ((video.width / 2) - rect.y);
+                //xHatNewPosition = rect.x - (video.width / 2) + (rect.width/2);
+                //yHatNewPosition = (alertOrientation) ? ((video.height / 2) - rect.y  + (rect.height/2)) : ((video.width / 2) - rect.y);
                 
                 xWidth = (video.videoWidth > video.offsetWidth && video.offsetWidth > 0) ? video.offsetWidth : video.videoWidth;
                 xHeight = (video.videoHeight > video.offsetHeight && video.offsetHeight > 0) ? video.offsetHeight : video.videoHeight;
@@ -583,8 +601,10 @@
                 if(rect.x > xWidth / 3)
                   rect.width = rect.width / 2;
                 
-                xHatNewPosition = -(xWidth/2) + rect.x + (rect.width / 2) + 30;
-                yHatNewPosition = (xHeight / 2 + 40) - rect.y;
+                xHatNewPosition = -(-(xWidth*0.40) + rect.x);
+                //xHatNewPosition = rect.x;
+                yHatNewPosition = (xHeight * 0.7) - rect.y;
+                //yHatNewPosition = rect.y;
 
                 //xHatNewPosition *= video.videoWidth / video.videoHeight;
                 //yHatNewPosition *= video.videoWidth / video.videoHeight;
@@ -646,7 +666,6 @@
 
     window.addEventListener('orientationchange', function () {
       setTimeout(function() {
-        console.log('faccio il re init');
         console.log(video);
         delete tracker;
         initVideoSize(isMobile, video);
@@ -762,7 +781,7 @@
       }
       document.getElementById('canvas').style.display = "none";
       document.getElementsByClassName('questions')[0].style.display = "none";
-      document.getElementsByClassName('house')[0].style.display = "block";
+      document.getElementsByClassName('house')[0].style.setProperty('display', 'block', 'important');
       document.getElementsByClassName('house-name')[0].innerHTML = houseName;
       document.getElementsByClassName('house-name')[0].className += " " + houseName.toLowerCase();
       document.getElementById('house-img').src = "/assets/img/" + houseName.toLocaleLowerCase() + ".png";
