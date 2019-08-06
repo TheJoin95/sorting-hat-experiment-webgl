@@ -353,8 +353,7 @@
       
         console.log(canvas.width);
         console.log(canvas.height);
-      }
-      else{
+      }else{
         //video.src = 'assets/video/video.webm';
         alert("Visit this on mobile, pls");
         window.location.href = "/desktop.html";
@@ -393,8 +392,18 @@
       context.scale(-1, 1);
 
       setTimeout(function() {
-        window.scene.position.set(-100, 250,0); // Set scene origin on the high-left corner, consider the max size of the hat
+        var wFactor = 0.6;
+        var hFactor = 0.25;
+        if(screen.width < 667){
+          //wFactor = 0.3;
+          //hFactor = 0.10;
+          window.scene.position.set(innerWidth/3,innerHeight/3,0);
+        }else{
+          window.scene.position.set(innerWidth/2, innerHeight/2, 0);
+        }
+        //window.scene.position.set(-100, 250,0); // Set scene origin on the high-left corner, consider the max size of the hat
         tracker.on('track', function(event) {
+          //return false;
           if(video.videoWidth > video.videoHeight && alertOrientation == false && window.innerWidth < window.innerHeight) {
             console.log(video.videoWidth);
             console.log(video.videoHeight);
@@ -408,7 +417,6 @@
 
             event.data.forEach(function(rect) {
               recognizeAttemps++;
-
               if(window.location.hash == '#debug'){
                 context.strokeStyle = '#a64ceb';
                 context.strokeRect(rect.x, rect.y, rect.width, rect.height);
@@ -447,10 +455,12 @@
                 //xHatNewPosition = (-xWidth/2) + rect.x + rect.width / 2;
                 //yHatNewPosition = (xHeight / 2) - rect.y * (xWidth / xHeight) - rect.height / 4;
 
-                // xHatNewPosition = ((xWidth*0.20) - rect.x);
-                // yHatNewPosition = (xHeight * 0.5) - rect.y;
-                xHatNewPosition = (rect.x);
-                yHatNewPosition = - rect.y + rect.height / 4;
+                //xHatNewPosition = ((xWidth*0.20) - rect.x);
+                //yHatNewPosition = (xHeight * 0.5) - rect.y;
+                xHatNewPosition = - ((rect.x) + (rect.width * wFactor));
+                yHatNewPosition = - (rect.y - rect.height * hFactor);
+
+                console.log(rect);
 
                 //xHatNewPosition *= video.videoWidth / video.videoHeight;
                 //yHatNewPosition *= video.videoWidth / video.videoHeight;
@@ -459,7 +469,7 @@
                   .to({ x: xHatNewPosition, y: yHatNewPosition, z: window.hat.position.z }, 200)
                   .start();
 
-                //requestAnimationFrame(animateHatPosition);
+                requestAnimationFrame(animateHatPosition);
               }
             });
           }
