@@ -480,6 +480,10 @@
       canvas = document.getElementById('canvas-track');
       isMobile = false;
 
+      if(screen.width < 997) {
+        window.location.href = "/";
+      }
+
       loadJSON(function(response) {
         quizJSON = JSON.parse(response);
       });

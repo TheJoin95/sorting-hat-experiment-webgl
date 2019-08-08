@@ -385,7 +385,7 @@
         gui.add(tracker, 'stepSize', 1, 5).step(0.1);
       }
       
-      var faceTrackingTask = tracking.track('#video', tracker, { camera: isMobile , fps: 1.5});
+      var faceTrackingTask = tracking.track('#video', tracker, { camera: isMobile , fps: 400});
       var alertOrientation = false;
 
       context.translate(canvas.width, 0);
@@ -394,13 +394,13 @@
       setTimeout(function() {
         var wFactor = 0.6;
         var hFactor = 0.25;
+        window.changeTime = 0;
         if(screen.width < 667){
-          //wFactor = 0.3;
-          //hFactor = 0.10;
-          window.scene.position.set(innerWidth/3,innerHeight/3,0);
-        }else{
-          window.scene.position.set(innerWidth/2, innerHeight/2, 0);
+          wFactor = 0.5;
+          hFactor = 0.05;
         }
+
+        window.scene.position.set(innerWidth/2, innerHeight/2, 0);
         //window.scene.position.set(-100, 250,0); // Set scene origin on the high-left corner, consider the max size of the hat
         tracker.on('track', function(event) {
           //return false;
@@ -460,16 +460,17 @@
                 xHatNewPosition = - ((rect.x) + (rect.width * wFactor));
                 yHatNewPosition = - (rect.y - rect.height * hFactor);
 
-                console.log(rect);
-
                 //xHatNewPosition *= video.videoWidth / video.videoHeight;
                 //yHatNewPosition *= video.videoWidth / video.videoHeight;
 
-                var tweenHat = new TWEEN.Tween(window.hat.position)
-                  .to({ x: xHatNewPosition, y: yHatNewPosition, z: window.hat.position.z }, 200)
-                  .start();
+                //if((new Date().getTime() - window.changeTime) > 600) {
+                  var tweenHat = new TWEEN.Tween(window.hat.position)
+                    .to({ x: xHatNewPosition, y: yHatNewPosition, z: window.hat.position.z }, 200)
+                    .start();
 
-                requestAnimationFrame(animateHatPosition);
+                  requestAnimationFrame(animateHatPosition);
+                  //window.changeTime = new Date().getTime();
+                //}
               }
             });
           }
