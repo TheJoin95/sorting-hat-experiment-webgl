@@ -313,8 +313,8 @@
       <h2 class="house-name"></h2>
       <img id="house-img" />
       <div style="text-align: center;">
-        <a href=""  id="fb-link" target="_blank"><img src="/assets/img/fb.png" class="social"></a>
-        <a href="" id="tw-link" target="_blank"><img src="/assets/img/twitter.png" class="social" style="background: #fff;"></a>
+        <a href=""  id="fb-link" target="_blank"><img src="assets/img/fb.png" class="social"></a>
+        <a href="" id="tw-link" target="_blank"><img src="assets/img/twitter.png" class="social" style="background: #fff;"></a>
       </div>
     </div>
   </div>
@@ -356,7 +356,7 @@
       }else{
         //video.src = 'assets/video/video.webm';
         alert("Visit this on mobile, pls");
-        window.location.href = "/desktop.html";
+        window.location.href = "desktop.html";
       }
 
       document.getElementById('demo-container').style.width = window.innerWidth + "px";
@@ -641,7 +641,7 @@
       document.getElementsByClassName('house')[0].style.display = "block";
       document.getElementsByClassName('house-name')[0].innerHTML = houseName;
       document.getElementsByClassName('house-name')[0].className += " " + houseName.toLowerCase();
-      document.getElementById('house-img').src = "/assets/img/" + houseName.toLocaleLowerCase() + ".png";
+      document.getElementById('house-img').src = "assets/img/" + houseName.toLocaleLowerCase() + ".png";
       
       var audio = new Audio('/assets/audio/' + houseName.toLowerCase() + '/that-be.mp3').play();
       setTimeout(function() {
